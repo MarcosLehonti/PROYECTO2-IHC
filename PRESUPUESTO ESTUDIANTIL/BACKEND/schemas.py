@@ -112,3 +112,20 @@ class LimiteMensualOut(BaseModel):
     gastado_mes: float
     disponible: Optional[float] = None
     mes: str
+
+
+class PresupuestoCategoriaIn(BaseModel):
+    categoria_id: int
+    monto_limite: float
+    mes: Optional[str] = None
+
+class PresupuestoCategoriaOut(BaseModel):
+    id: Optional[int] = None
+    categoria_id: int
+    categoria_nombre: str
+    categoria_icono: Optional[str] = "tag"
+    monto_limite: Optional[float] = None
+    gastado: float = 0.0
+    disponible: Optional[float] = None
+    porcentaje: float = 0.0
+    mes: str

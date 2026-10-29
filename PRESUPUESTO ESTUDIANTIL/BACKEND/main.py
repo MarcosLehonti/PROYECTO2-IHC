@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 import models
-from routers import usuarios, movimientos, categorias, limite
+from routers import usuarios, movimientos, categorias, limite, presupuestos
 
 from sqlalchemy import text, inspect
 
@@ -55,6 +55,7 @@ app.include_router(usuarios.router)
 app.include_router(movimientos.router)
 app.include_router(categorias.router)
 app.include_router(limite.router)
+app.include_router(presupuestos.router)
 
 @app.get("/")
 def ruta_raiz():
