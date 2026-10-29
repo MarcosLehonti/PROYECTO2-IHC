@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Numeric, Date, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
@@ -60,3 +60,21 @@ class Movimiento(Base):
     creado_en = Column(DateTime, default=datetime.utcnow)
 
     usuario = relationship("Usuario", back_populates="movimientos")     #Desde un movimiento, puedo acceder al usuario que lo creó
+
+
+class PresupuestoCategoria(Base):
+    __tablename__ = "presupuestos_categoria"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False, index=True)
+    categoria_id = Column(Integer, ForeignKey("categorias.id", ondelete="CASCADE"), nullable=False)
+    monto_limite = Column(Numeric(10, 2), nullable=False)
+    mes = Column(String(7), nullable=False)  # Formato 'YYYY-MM'
+    creado_en = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("usuario_id", "categoria_id", "mes", name="uq_usuario_categoria_mes"),
+    )
+
+    usuario = relationship("Usuario")
+    categoria = relationship("Categoria")
