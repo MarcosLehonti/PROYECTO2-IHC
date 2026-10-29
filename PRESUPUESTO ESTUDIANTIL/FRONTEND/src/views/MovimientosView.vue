@@ -92,6 +92,26 @@
           </div>
           <!-- /// [H10 - Ayuda y documentación: porcentaje de consumo visible] /// -->
           <span class="card-subtext">Usaste el {{ porcentajeLimite }}% de tu límite.</span>
+
+        <!-- Presupuesto mensual por categoría -->
+        <div class="presupuestos-cat-bloque">
+          <button type="button" class="btn-toggle-cat" @click="mostrarPresupuestosCat = !mostrarPresupuestosCat; if (mostrarPresupuestosCat && !presupuestosCat.length) cargarPresupuestosCat()">
+            {{ mostrarPresupuestosCat ? '▲ Ocultar presupuesto por categoría' : '▼ Ver presupuesto por categoría' }}
+          </button>
+          <div v-if="mostrarPresupuestosCat" class="cat-presupuestos-lista">
+            <div v-for="cat in presupuestosCat" :key="cat.categoria_id" class="cat-pres-item">
+              <span class="cat-pres-nombre">{{ cat.categoria_nombre }}</span>
+              <span class="cat-pres-monto">
+                Gastado: <strong>{{ cat.gastado.toFixed(2) }} Bs</strong>
+                <template v-if="cat.monto_limite !== null"> / Límite: {{ cat.monto_limite.toFixed(2) }} Bs ({{ cat.porcentaje }}%)</template>
+                <template v-else> · <em>Sin límite</em></template>
+              </span>
+              <button type="button" class="btn-asignar-cat" @click="asignarPresupuestoCat(cat)">
+                {{ cat.monto_limite !== null ? 'Editar' : 'Asignar' }}
+              </button>
+            </div>
+          </div>
+        </div>
           <!-- /// ============================================================ /// -->
         </template>
       </section>
@@ -912,6 +932,28 @@ const porcentajeLimite = computed(() => {
   if (!limite) return 0
   return Math.min(Math.round((gastado_mes / limite) * 100), 100)
 })
+
+const presupuestosCat = ref([])
+const mostrarPresupuestosCat = ref(false)
+
+async function cargarPresupuestosCat() {
+  if (esDemo) return
+  try {
+    const res = await fetch(`${API_URL}/presupuestos-categoria`, { headers: authHeaders() })
+    if (res.ok) presupuestosCat.value = await res.json()
+  } catch (e) {}
+}
+
+async function asignarPresupuestoCat(cat) {
+  const monto = prompt(`Límite mensual para ${cat.categoria_nombre} (Bs):`, cat.monto_limite || '')
+  if (!monto || isNaN(monto) || Number(monto) <= 0) return
+  await fetch(`${API_URL}/presupuestos-categoria`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ categoria_id: cat.categoria_id, monto_limite: Number(monto) })
+  })
+  cargarPresupuestosCat()
+}
 
 async function cargarLimite() {
   if (esDemo) return
@@ -2882,4 +2924,13 @@ onUnmounted(() => {
   font-weight: 500;
 }
 /* /// =================================================================================== /// */
+
+.presupuestos-cat-bloque { margin-top: 14px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
+.btn-toggle-cat { background: none; border: none; color: #1d4ed8; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
+.cat-presupuestos-lista { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.cat-pres-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 10px; background: #f8fafc; border-radius: 6px; }
+.cat-pres-nombre { font-weight: 500; color: #1e293b; }
+.cat-pres-monto { color: #64748b; font-size: 12px; }
+.btn-asignar-cat { background: white; border: 1px solid #cbd5e1; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; }
+
 </style>
