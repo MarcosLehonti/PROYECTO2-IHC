@@ -242,13 +242,8 @@ def marcar_como_pagado(
 ):
     bloquear_demo(usuario)
 
-    mov = db.query(models.Movimiento).filter(
-        models.Movimiento.id == movimiento_id,
-        models.Movimiento.usuario_id == usuario.id
-    ).first()
-
-    if not mov:
-        raise HTTPException(status_code=404, detail="Movimiento no encontrado.")
+    # REFACTOR: Uso del helper estandar
+    mov = obtener_movimiento_propio(movimiento_id, db, usuario)
 
     if getattr(mov, "estado", "pendiente") == "pagado":          #Si el atributo estado de mov es igual a 'pagado', entonces..  SI NO HAY PAGADO USA PENDIENTE
         raise HTTPException(
@@ -263,21 +258,8 @@ def marcar_como_pagado(
     db.commit()
     db.refresh(mov)
 
-    categoria_nombre = "General"
-    if mov.categoria_id:
-        cat = db.query(models.Categoria).filter(models.Categoria.id == mov.categoria_id).first()
-        if cat:
-            categoria_nombre = cat.nombre
-
-    return {
-        "id": mov.id,
-        "descripcion": mov.descripcion,
-        "categoria": categoria_nombre,
-        "monto": float(mov.monto),
-        "tipo": mov.tipo,
-        "fecha": mov.fecha.strftime("%Y-%m-%d") if hasattr(mov.fecha, 'strftime') else str(mov.fecha),
-        "estado": mov.estado
-    }
+    # REFACTOR: Serializacion unificada a traves del helper existente
+    return serializar_movimiento(mov, db)
 
 
 # endpoint PUT /movimientos/{movimiento_id}: el que edita un 
