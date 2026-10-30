@@ -40,3 +40,16 @@ CREATE TABLE movimientos (
 
 CREATE INDEX idx_movimientos_usuario ON movimientos(usuario_id);
 CREATE INDEX idx_movimientos_fecha ON movimientos(fecha);
+
+
+CREATE TABLE IF NOT EXISTS presupuestos_categoria (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    categoria_id INTEGER NOT NULL REFERENCES categorias(id) ON DELETE CASCADE,
+    monto_limite NUMERIC(10, 2) NOT NULL CHECK (monto_limite > 0),
+    mes VARCHAR(7) NOT NULL, -- Formato 'YYYY-MM'
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_usuario_categoria_mes UNIQUE (usuario_id, categoria_id, mes)
+);
+
+CREATE INDEX IF NOT EXISTS idx_presupuestos_usuario_mes ON presupuestos_categoria(usuario_id, mes);
