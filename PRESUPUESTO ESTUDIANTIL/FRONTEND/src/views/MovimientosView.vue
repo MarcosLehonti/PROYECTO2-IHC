@@ -275,6 +275,9 @@
               </td>
               <td class="col-desc-dato">
                 {{ item.descripcion }}
+                <span v-if="item.recurrencia && item.recurrencia !== 'ninguna'" class="badge-recurrencia">
+                  🔄 {{ item.recurrencia }}
+                </span>
               </td>
               <td class="col-fecha-dato">
                 {{ formatearFechaEspanol(item.fecha) }}
@@ -544,6 +547,16 @@
                 </option>
               </select>
             </div>
+          </div>
+
+          <!-- Campo Recurrencia (Tarea 6 - Gastos Recurrentes) -->
+          <div class="form-grupo-custom">
+            <label class="form-label-custom" for="recurrencia-gasto">¿Se repite?:</label>
+            <select id="recurrencia-gasto" v-model="recurrenciaGasto" class="form-input-custom select-recurrencia">
+              <option value="ninguna">No se repite (único)</option>
+              <option value="semanal">Semanal (cada 7 días)</option>
+              <option value="mensual">Mensual (cada mes)</option>
+            </select>
           </div>
 
           <!-- /// [H9 - Reconocer, diagnosticar y recuperarse de errores: acción constructiva] /// -->
@@ -1252,6 +1265,7 @@ const guardandoGasto = ref(false)
 const errorMsgGasto = ref('')
 const tipoGasto = ref('gasto')
 const categoriaGasto = ref('')
+const recurrenciaGasto = ref('ninguna')
 
 // Categorías del tipo elegido (las mismas que existen en la base de datos)
 const categoriasDelFormulario = computed(() => categorias.value.filter(c => c.tipo === tipoGasto.value))
@@ -1280,6 +1294,7 @@ watch(categoriasDelFormulario, (lista) => {
 function cerrarModalGasto() {
   abrirModal.value = false
   errorMsgGasto.value = ''
+  recurrenciaGasto.value = 'ninguna'
 }
 
 function formatearMovimientoTexto(item) {
@@ -1340,7 +1355,8 @@ async function guardarGastoEstudiantil() {
     monto: Number(cantidadGasto.value),
     tipo: tipoGasto.value,
     fecha: fechaISO,
-    estado: 'pendiente'
+    estado: 'pendiente',
+    recurrencia: recurrenciaGasto.value
   }
 
   // Se añade de inmediato a la lista y se guarda en localStorage (no se pierde al recargar)
@@ -1357,7 +1373,8 @@ async function guardarGastoEstudiantil() {
         monto: nuevoGasto.monto,
         tipo: nuevoGasto.tipo,
         fecha: nuevoGasto.fecha,
-        estado: 'pendiente'
+        estado: 'pendiente',
+        recurrencia: recurrenciaGasto.value
       })
     })
 
@@ -1436,7 +1453,7 @@ async function marcarComoPagado(item) {
       item.estado = data.estado || 'pagado'
       guardarEnStorage(listaMovimientos.value)
       // Con filtros, la fila es una copia: se recarga para que la lista y los totales coincidan
-      if (hayFiltrosActivos.value) await cargarMovimientos()
+      if (hayFiltrosActivos.value || (item.recurrencia && item.recurrencia !== 'ninguna')) await cargarMovimientos()
     } else if (res.status === 400) {
       // Transición inválida: ya estaba pagado (por ejemplo, desde otra pestaña)
       mostrarAvisoEstado('Transición inválida: el movimiento ya se encuentra en estado pagado.')
@@ -2932,5 +2949,6 @@ onUnmounted(() => {
 .cat-pres-nombre { font-weight: 500; color: #1e293b; }
 .cat-pres-monto { color: #64748b; font-size: 12px; }
 .btn-asignar-cat { background: white; border: 1px solid #cbd5e1; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; }
+.badge-recurrencia { font-size: 11px; background-color: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 9999px; padding: 1px 7px; margin-left: 6px; font-weight: 600; display: inline-block; }
 
 </style>
