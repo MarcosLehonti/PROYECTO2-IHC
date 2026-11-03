@@ -116,7 +116,8 @@ def listar_movimientos(
             "monto": monto_float,
             "tipo": m.tipo,
             "fecha": m.fecha.strftime("%Y-%m-%d")                     if hasattr(m.fecha, 'strftime') else str(m.fecha),
-            "estado": estado_val
+            "estado": estado_val,
+            "recurrencia": getattr(m, "recurrencia", "ninguna") or "ninguna"
         })
 
     saldo = round(ingresos - gastos, 2)

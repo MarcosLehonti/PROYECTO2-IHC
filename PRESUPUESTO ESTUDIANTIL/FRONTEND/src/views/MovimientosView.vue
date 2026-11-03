@@ -1383,6 +1383,7 @@ async function guardarGastoEstudiantil() {
       const data = await res.json()
       nuevoGasto.id = data.id
       nuevoGasto.estado = data.estado || 'pendiente'
+      nuevoGasto.recurrencia = data.recurrencia || nuevoGasto.recurrencia
       guardarEnStorage(listaMovimientos.value)
       avisarOtrasPestanas('creado', nuevoGasto.descripcion)
       await sincronizarDesdeServidor(`Se registró "${nuevoGasto.descripcion}".`)

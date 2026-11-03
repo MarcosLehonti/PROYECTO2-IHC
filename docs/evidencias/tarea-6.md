@@ -34,7 +34,7 @@
 | Accesibilidad /login — sin violaciones críticas WCAG 2.0 AA | Accesibilidad | `tests/accesibilidad.spec.js` | ✅ PASA | [acc-01](tarea-6/accesibilidad-01-login.png) |
 | Accesibilidad /movimientos — sin violaciones críticas WCAG 2.0 AA | Accesibilidad | `tests/accesibilidad.spec.js` | ✅ PASA | [acc-02](tarea-6/accesibilidad-02-movimientos.png) |
 | Accesibilidad /historial — sin violaciones críticas WCAG 2.0 AA | Accesibilidad | `tests/accesibilidad.spec.js` | ✅ PASA | [acc-03](tarea-6/accesibilidad-03-historial.png) |
-| Gastos recurrentes (nueva feature) | Principal | `tests/recurrentes.spec.js` | 🔲 pendiente | — |
+| Gastos recurrentes: registrar, pagar y generar siguiente cuota | Principal | `tests/recurrentes.spec.js` | ✅ PASA | [rec-03](tarea-6/recurrentes-03-siguiente-generado.png) |
 
 ---
 
@@ -330,8 +330,41 @@
 
 ---
 
-> *Este archivo se irá completando conforme se ejecuten los demás tests.*
+## Prueba 10 — Gastos Recurrentes (Nueva Feature)
+
+**Archivo:** `tests/recurrentes.spec.js`  
+**Comando de ejecución:** `pnpm exec playwright test recurrentes --headed`
+
+### Qué se verifica
+
+| # | Verificación | ¿Pasa? |
+|---|-------------|--------|
+| 1 | El modal de registro incluye el selector de recurrencia ("¿Se repite?: Ninguna / Semanal / Mensual") | ✅ |
+| 2 | Al seleccionar "Semanal" y guardar, el gasto se crea en estado Pendiente y con badge `🔄 semanal` | ✅ |
+| 3 | Al marcar el gasto como pagado, el estado cambia a Pagado con su icono de verificación | ✅ |
+| 4 | El backend genera automáticamente una **nueva ocurrencia pendiente** con fecha +7 días | ✅ |
+| 5 | La tabla se actualiza mostrando tanto la cuota pagada como la nueva cuota pendiente generada | ✅ |
+
+### Capturas generadas
+
+**Formulario modal con recurrencia semanal seleccionada:**  
+![Formulario con recurrencia](tarea-6/recurrentes-01-modal-formulario.png)
+
+**Gasto semanal creado en estado pendiente con badge:**  
+![Gasto semanal creado](tarea-6/recurrentes-02-gasto-creado.png)
+
+**Cuota marcada como pagada y siguiente cuota generada automáticamente (+7 días):**  
+![Siguiente cuota generada](tarea-6/recurrentes-03-siguiente-generado.png)
 
 ---
 
-*Este archivo se irá completando conforme se ejecuten los demás tests.*
+## Evidencia de Suite Completa — Estado Final ("DESPUÉS")
+
+> **Ejecución completa tras la implementación de la nueva funcionalidad (Gastos Recurrentes):**
+> - **Secuencia ejecutada:** `pnpm run seed` seguido de `pnpm exec playwright test`
+> - **Resultado global:** **24 passed (100% verde)** en 1 worker.
+> - **Todos los flujos (base + recurrentes + accesibilidad) validados exitosamente.**
+
+**Captura de terminal con la suite completa en verde (DESPUÉS):**  
+![Ejecución completa de la suite E2E - Estado DESPUÉS](tarea-6/suite-despues.png)
+
