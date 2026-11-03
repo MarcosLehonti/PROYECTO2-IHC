@@ -1,7 +1,8 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+import calendar
 from database import get_db
 import models
 import schemas
@@ -72,7 +73,8 @@ def serializar_movimiento(mov: models.Movimiento, db: Session) -> dict:      #->
         "monto": float(mov.monto),
         "tipo": mov.tipo,
         "fecha": mov.fecha.strftime("%Y-%m-%d") if hasattr(mov.fecha, 'strftime') else str(mov.fecha),
-        "estado": getattr(mov, "estado", "pendiente") or "pendiente"
+        "estado": getattr(mov, "estado", "pendiente") or "pendiente",
+        "recurrencia": getattr(mov, "recurrencia", "ninguna") or "ninguna"
     }
 
 #Es el endpoint GET /movimientos que muestra (lista) los movimientos
@@ -212,7 +214,8 @@ def crear_movimiento(
         tipo=datos.tipo or "gasto",
         descripcion=datos.descripcion.strip(),
         fecha=fecha_val,
-        estado=datos.estado or "pendiente"
+        estado=datos.estado or "pendiente",
+        recurrencia=datos.recurrencia or "ninguna"
     )
     db.add(nuevo)
     db.commit()
@@ -225,7 +228,8 @@ def crear_movimiento(
         "monto": float(nuevo.monto),
         "tipo": nuevo.tipo,
         "fecha": nuevo.fecha.strftime("%Y-%m-%d") if hasattr(nuevo.fecha, 'strftime') else str(nuevo.fecha),
-        "estado": nuevo.estado
+        "estado": nuevo.estado,
+        "recurrencia": nuevo.recurrencia
     }
 
 
@@ -255,6 +259,32 @@ def marcar_como_pagado(
         verificar_saldo_para_pago(db, usuario, mov.monto)
 
     mov.estado = "pagado"
+
+    # Feature Recurrencia: Si el movimiento es recurrente, generar siguiente ocurrencia pendiente
+    rec = getattr(mov, "recurrencia", "ninguna")
+    if rec and rec != "ninguna":
+        fecha_orig = mov.fecha if isinstance(mov.fecha, date) else datetime.strptime(str(mov.fecha), "%Y-%m-%d").date()
+        if rec == "semanal":
+            nueva_fecha = fecha_orig + timedelta(days=7)
+        elif rec == "mensual":
+            nuevo_anio = fecha_orig.year + (1 if fecha_orig.month == 12 else 0)
+            nuevo_mes = 1 if fecha_orig.month == 12 else fecha_orig.month + 1
+            max_dias = calendar.monthrange(nuevo_anio, nuevo_mes)[1]
+            nueva_fecha = fecha_orig.replace(year=nuevo_anio, month=nuevo_mes, day=min(fecha_orig.day, max_dias))
+        else:
+            nueva_fecha = fecha_orig + timedelta(days=7)
+
+        siguiente = models.Movimiento(
+            usuario_id=usuario.id,
+            categoria_id=mov.categoria_id,
+            monto=mov.monto,
+            tipo=mov.tipo,
+            descripcion=mov.descripcion,
+            fecha=nueva_fecha,
+            estado="pendiente",
+            recurrencia=rec
+        )
+        db.add(siguiente)
     db.commit()
     db.refresh(mov)
 

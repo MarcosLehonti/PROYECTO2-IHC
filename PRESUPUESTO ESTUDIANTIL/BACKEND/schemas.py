@@ -42,6 +42,7 @@ class MovimientoCreate(BaseModel):
     tipo: Optional[str] = "gasto"
     fecha: Optional[str] = None
     estado: Optional[str] = "pendiente"
+    recurrencia: Optional[str] = "ninguna"
 
 class MovimientoUpdate(BaseModel):
     descripcion: Optional[str] = None
@@ -56,6 +57,7 @@ class MovimientoOut(BaseModel):
     tipo: str
     fecha: str
     estado: str = "pendiente"
+    recurrencia: Optional[str] = "ninguna"
 
     class Config:
         from_attributes = True
