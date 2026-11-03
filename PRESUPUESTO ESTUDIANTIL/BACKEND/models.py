@@ -57,6 +57,7 @@ class Movimiento(Base):
     descripcion = Column(String(255), nullable=False)
     fecha = Column(Date, default=datetime.utcnow().date)
     estado = Column(String(20), default="pendiente", nullable=False)
+    recurrencia = Column(String(10), default="ninguna", nullable=False)
     creado_en = Column(DateTime, default=datetime.utcnow)
 
     usuario = relationship("Usuario", back_populates="movimientos")     #Desde un movimiento, puedo acceder al usuario que lo creó

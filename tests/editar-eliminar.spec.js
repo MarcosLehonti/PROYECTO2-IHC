@@ -100,7 +100,7 @@ test.describe('Pruebas E2E - Editar y Eliminar Movimientos', () => {
     await page.waitForURL('**/movimientos');
 
     // 2. Ubicar la última fila (por ejemplo una de las fotocopias de prueba)
-    const filaAEliminar = page.locator('tr.fila-movimiento').last();
+    const filaAEliminar = page.locator('tr.fila-movimiento', { hasText: 'Almuerzo' }).first();
     await expect(filaAEliminar).toBeVisible();
     const textoFila = (await filaAEliminar.locator('.col-desc-dato').textContent())?.trim() || '';
 

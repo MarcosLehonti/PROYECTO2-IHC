@@ -34,6 +34,7 @@ CREATE TABLE movimientos (
     descripcion VARCHAR(255) NOT NULL,
     fecha DATE NOT NULL DEFAULT CURRENT_DATE,
     estado VARCHAR(20) NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'pagado')),
+    recurrencia VARCHAR(10) NOT NULL DEFAULT 'ninguna' CHECK (recurrencia IN ('ninguna', 'semanal', 'mensual')),
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

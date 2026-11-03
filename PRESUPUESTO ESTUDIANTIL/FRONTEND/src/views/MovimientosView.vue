@@ -2424,7 +2424,7 @@ onUnmounted(() => {
 }
 
 .badge-estado-pagado {
-  background-color: #22C55E;
+  background-color: #15803d;
   color: #FFFFFF;
 }
 

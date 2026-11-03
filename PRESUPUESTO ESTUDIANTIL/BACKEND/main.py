@@ -16,6 +16,11 @@ try:
                 conn.execute(text("ALTER TABLE movimientos ADD COLUMN estado VARCHAR(20) DEFAULT 'pendiente' NOT NULL;"))
                 conn.commit()
                 print("[OK] Columna 'estado' agregada a tabla movimientos exitosamente.")
+        if "recurrencia" not in columnas:
+            with engine.connect() as conn:
+                conn.execute(text("ALTER TABLE movimientos ADD COLUMN recurrencia VARCHAR(10) DEFAULT 'ninguna' NOT NULL;"))
+                conn.commit()
+                print("[OK] Columna 'recurrencia' agregada a tabla movimientos exitosamente.")
     if "usuarios" in inspector.get_table_names():
         columnas = [c["name"] for c in inspector.get_columns("usuarios")]
         if "limite_mensual" not in columnas:
