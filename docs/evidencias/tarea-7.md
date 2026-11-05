@@ -1,4 +1,4 @@
-# Tarea 7 — Mejoras de UX y Gestión de Límites por Categoría y Mes
+# Tarea 7 — Correcciones de Feedback y Nueva Funcionalidad de Límites por Categoría
 
 **Proyecto:** Presupuesto Estudiantil  
 **Evaluador / Alumno:** Guzmán Montalvan Marcos Lehonti  
@@ -8,64 +8,74 @@
 
 ---
 
-## 1. Contexto: Feedback Recibido en Clase 19 y Correcciones Iniciales
+# PARTE 1: Correcciones Basadas en el Feedback Recibido (Clase 19)
 
-Durante la evaluación entre pares de la Clase 19, el compañero **Lorgio Choque Severiche** evaluó el proyecto y registró su análisis en el repositorio con las siguientes observaciones principales:
+Durante la evaluación entre pares de la Clase 19, el evaluador **Lorgio Choque Severiche** probó el flujo principal de registrar gastos y buscar mediante filtros en *Presupuesto Estudiantil*. Completó la tarea sin errores bloqueantes, pero reportó oportunidades de mejora prioritarias en usabilidad.
 
-1. **Ambigüedad en el botón principal:** La etiqueta `"+ Registrar Movimiento"` resultaba genérica para el modelo mental de un estudiante. Se corrigió renombrándolo a `"+ Registrar Gasto"`.
-2. **Fecha estática en el formulario:** El formulario cargaba con valores fijos (`1 / Octubre`), obligando al usuario a seleccionar manualmente la fecha. Se corrigió precargando dinámicamente la fecha actual (`hoy.getDate()` y mes corriente) permitiendo seleccionar fechas pasadas o futuras.
+Se implementaron y corrigieron los 2 puntos principales señalados:
+
+## 1.1 Corrección 1: Renombrar botón a "Registrar Gasto"
+
+* **Problema reportado:**  
+  La etiqueta original `"+ Registrar Movimiento"` utilizaba un lenguaje bancario/contable que generaba duda en un usuario estudiante sobre si registraría un gasto o un ingreso.
+* **Solución aplicada:**  
+  Se cambió el texto del botón de acción principal a **`"+ Registrar Gasto"`** y se adaptaron los textos descriptivos de estados vacíos.
+* **Archivos modificados:**
+  - `PRESUPUESTO ESTUDIANTIL/FRONTEND/src/views/MovimientosView.vue` (Línea 149 y 265)
+  - `PRESUPUESTO ESTUDIANTIL/FRONTEND/src/views/HistorialView.vue` (Línea 50)
+
+### Evidencia Visual: Botón Actualizado
+Muestra la barra superior del panel con el botón renombrado a **"+ Registrar Gasto"**:  
+![Botón Registrar Gasto](tarea-7/tarea7-01-boton-registrar-gasto.png)
 
 ---
 
-## 2. Nueva Funcionalidad: Límites por Categoría y Mes con Recálculo Dinámico
+## 1.2 Corrección 2: Fecha actual precargada por defecto en el formulario
 
-Se implementó el sistema completo de **Presupuestos y Límites por Categoría y Mes** cumpliendo con todas las reglas de negocio y consistencia:
+* **Problema reportado:**  
+  El formulario de nuevo gasto abría siempre con valores estáticos (`1` y `'Octubre'`), forzando al estudiante a buscar manualmente el día y mes de hoy cada vez que registraba un gasto corriente.
+* **Solución aplicada:**  
+  Se inicializaron `diaGasto` y `mesGasto` de forma reactiva con la fecha del sistema (`hoy.getDate()` y mes actual), haciendo además el año dinámico (`hoy.getFullYear()`), pero permitiendo total libertad para seleccionar fechas pasadas o futuras según convenga.
+* **Archivos modificados:**
+  - `PRESUPUESTO ESTUDIANTIL/FRONTEND/src/views/MovimientosView.vue` (Líneas 1262-1263, 1280, 1338 y 1411-1412)
 
-### Reglas de Negocio Implementadas
-1. **Crear y editar límite mensual por categoría sin duplicados:**  
-   Se utiliza una restricción única por `(usuario_id, categoria_id, mes)` tanto a nivel de base de datos (`uq_usuario_categoria_mes`) como en el endpoint `POST /presupuestos-categoria`. Si el límite ya existe para ese mes, se actualiza (`UPSERT`), evitando duplicados.
-2. **Métricas visibles por categoría:**  
-   Cada categoría con presupuesto muestra:
-   - **Gasto acumulado** en el mes: `gastado` (suma de movimientos de tipo `gasto` en ese mes/categoría).
-   - **Monto límite** asignado y porcentaje de uso: `monto_limite (porcentaje%)`.
-   - **Saldo disponible**: `saldo` = `monto_limite - gastado`.
+### Evidencia Visual: Formulario con Fecha de Hoy por Defecto
+Muestra el modal abierto con el día y mes actual precargados automáticamente:  
+![Fecha por defecto](tarea-7/tarea7-02-fecha-por-defecto.png)
+
+---
+
+# PARTE 2: Nueva Funcionalidad — Límites por Categoría y Mes
+
+Se implementó el ciclo de vida completo de **Límites y Presupuestos por Categoría y Mes**, garantizando cálculos en tiempo real, alertas preventivas y recálculos reactivos cruzados.
+
+## 2.1 Reglas de Negocio Implementadas
+
+1. **Creación y edición sin duplicados (UPSERT):**  
+   Restricción única por `(usuario_id, categoria_id, mes)` en base de datos (`uq_usuario_categoria_mes`) y en el endpoint `POST /presupuestos-categoria`. Si el presupuesto ya existe para ese mes, se actualiza el monto límite existente.
+2. **Visualización de métricas clave:**  
+   Para cada categoría se expone:
+   - **Gasto acumulado:** Suma de los gastos del mes para la categoría.
+   - **Monto límite asignado y porcentaje de consumo:** `monto_limite` y `porcentaje%`.
+   - **Saldo disponible:** `saldo = monto_limite - gastado`. Si se excede, el saldo se muestra en negativo y en color rojo.
 3. **Semáforo de estados:**
-   - **Dentro del límite:** Cuando el consumo es menor al 80% (badge verde `Dentro del límite`).
-   - **Alerta (>=80%):** Cuando el consumo alcanza o supera el 80% sin exceder el 100% (badge amarillo `>=80%`).
-   - **Excedido:** Cuando el gasto supera el 100% del presupuesto (badge rojo `Excedido` y saldo en negativo).
-4. **Recálculo automático al registrar, editar o eliminar gastos:**
-   - **Registrar:** Al crear un gasto en una categoría, su presupuesto se actualiza de inmediato.
-   - **Editar:** Si se modifica el monto, la fecha (mes) o se traslada el gasto a otra categoría, **ambos períodos y categorías afectados se recalculan automáticamente**.
-   - **Eliminar:** Al borrar un gasto, el monto consumido se descuenta en tiempo real.
+   - 🟢 **`Dentro del límite`**: Cuando el consumo es inferior al 80%.
+   - 🟡 **`>=80%`**: Alerta temprana cuando el gasto alcanza o supera el 80% del límite asignado.
+   - 🔴 **`Excedido`**: Alerta crítica cuando el gasto acumulado supera el 100% del presupuesto.
+4. **Recálculo automático al registrar, editar o eliminar:**
+   - **Registrar:** Aumenta de inmediato el gasto acumulado de la categoría seleccionada.
+   - **Editar:** Si se modifica el monto, la fecha (mes) o se traslada el gasto a otra categoría, **se recalculan automáticamente ambos períodos y categorías afectados**.
+   - **Eliminar:** Descuenta de inmediato el gasto de la categoría.
 5. **Aislamiento de ingresos:**  
-   Los movimientos de tipo `ingreso` **no consumen presupuesto** ni alteran los cálculos de límites de categoría.
+   Los registros de tipo `ingreso` no consumen presupuesto ni afectan los límites de categoría.
 
 ---
 
-## 3. Cambios Implementados en el Código
+## 2.2 Pruebas E2E en Playwright y Capturas de Evidencia
 
-### Backend
-- **[`PRESUPUESTO ESTUDIANTIL/BACKEND/schemas.py`](file:///C:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/PRESUPUESTO%20ESTUDIANTIL/BACKEND/schemas.py):**
-  - Se extendió `MovimientoUpdate` para permitir actualizar la `categoria`.
-  - Se extendió `PresupuestoCategoriaOut` con los campos calculados `saldo` y `estado` (`normal`, `alerta`, `excedido`, `sin_limite`).
-- **[`PRESUPUESTO ESTUDIANTIL/BACKEND/routers/movimientos.py`](file:///C:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/PRESUPUESTO%20ESTUDIANTIL/BACKEND/routers/movimientos.py):**
-  - Soporte en `editar_movimiento` para reasignar `categoria_id` al editar la categoría de un gasto.
-- **[`PRESUPUESTO ESTUDIANTIL/BACKEND/routers/presupuestos.py`](file:///C:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/PRESUPUESTO%20ESTUDIANTIL/BACKEND/routers/presupuestos.py):**
-  - En `listar_presupuestos_categoria` y `guardar_presupuesto_categoria` se calcula `saldo = monto_limite - gastado` y la clasificación semafórica de `estado`.
+Se automatizó la verificación completa de esta funcionalidad en la suite [`tests/limite-categoria-mes.spec.js`](file:///C:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/tests/limite-categoria-mes.spec.js).
 
-### Frontend
-- **[`PRESUPUESTO ESTUDIANTIL/FRONTEND/src/views/MovimientosView.vue`](file:///C:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/PRESUPUESTO%20ESTUDIANTIL/FRONTEND/src/views/MovimientosView.vue):**
-  - Modal de edición ahora cuenta con selector de categoría `#editar-categoria`.
-  - Lista de presupuestos por categoría muestra gasto acumulado, límite, saldo y badges dinámicos (`.badge-cat-ok`, `.badge-cat-alerta`, `.badge-cat-excedido`).
-  - Sincronización en tiempo real: `sincronizarDesdeServidor()` actualiza automáticamente las categorías si el panel se encuentra abierto tras crear, editar o eliminar movimientos.
-
----
-
-## 4. Evidencias y Pruebas E2E Automatizadas (Playwright)
-
-Se diseñó e implementó la suite completa de pruebas E2E en [`tests/limite-categoria-mes.spec.js`](file:///C:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/tests/limite-categoria-mes.spec.js), verificando cada regla de negocio con capturas de pantalla automáticas.
-
-### Resumen de Ejecución
+### Resultado de la Suite Playwright
 - **Total de pruebas en el proyecto:** 26 pruebas.
 - **Resultado:** **26 pasadas, 0 fallidas (100% éxito)**.
 
@@ -75,43 +85,44 @@ Running 26 tests using 1 worker
 [14/26] [chromium] › tests\limite-categoria-mes.spec.js › Test 1: Visualizar gasto acumulado, saldo y estados
 [15/26] [chromium] › tests\limite-categoria-mes.spec.js › Test 2: Registrar, editar categoría/fecha y eliminar gasto recalcula automáticamente ambos presupuestos afectados
 ...
-26 passed (1.0m)
+  26 passed (1.0m)
 ```
 
-### Galería de Capturas Generadas
+### Galería de Capturas de la Nueva Funcionalidad
 
-#### 1. Estado "Dentro del límite"
-Muestra presupuesto de Comida y Almuerzos con consumo inicial bajo control (35 de 150 Bs gastados, saldo favorable y badge verde `Dentro del límite`).  
+#### Captura 1: Visualización del Presupuesto y Estado "Dentro del límite"
+Presupuesto asignado a *Comida y Almuerzos* (35 Bs gastados de 150 Bs de límite, saldo a favor de 115 Bs y badge verde `Dentro del límite`).  
 ![Dentro del límite](tarea-7/tarea7-01-estado-dentro-limite.png)
 
-#### 2. Estado de Alerta (>=80%)
-Al ajustar el límite mensual a 40 Bs con 35 Bs gastados (87.5% de consumo), se activa automáticamente el estado de advertencia con badge amarillo `>=80%`.  
+#### Captura 2: Alerta Preventiva `>=80%`
+Al ajustar el límite mensual a 40 Bs con 35 Bs gastados (87.5% de consumo), se activa automáticamente el badge amarillo `>=80%`.  
 ![Alerta 80%](tarea-7/tarea7-02-estado-alerta-80.png)
 
-#### 3. Estado "Excedido" con Saldo Negativo
-Al fijar un límite menor al gasto acumulado (30 Bs vs 35 Bs gastados), el saldo pasa a rojo (`-5.00 Bs`) y se exhibe el badge rojo `Excedido`.  
+#### Captura 3: Estado "Excedido" y Saldo Negativo
+Al fijar un límite de 30 Bs con 35 Bs gastados, el saldo se calcula en `-5.00 Bs` y se muestra el badge rojo `Excedido`.  
 ![Excedido](tarea-7/tarea7-03-estado-excedido.png)
 
-#### 4. Recálculo tras Registrar Gasto
-Al asignar 100 Bs a *Transporte y Pasajes* y registrar un gasto de 30 Bs, el gasto acumulado sube automáticamente de 20 Bs a 50 Bs.  
+#### Captura 4: Recálculo tras Registrar Gasto
+Al asignar 100 Bs a *Transporte y Pasajes* y registrar un nuevo gasto de 30 Bs, el acumulado se actualiza en tiempo real sumando dicho valor.  
 ![Gasto registrado](tarea-7/tarea7-04-gasto-registrado-recalculado.png)
 
-#### 5. Mover Gasto de Categoría Recalcula Ambas
-Al editar el gasto de 30 Bs moviéndolo de *Transporte y Pasajes* a *Comida y Almuerzos*, se comprueba que **Transporte descuenta 30 Bs** y **Comida incrementa 30 Bs** simultáneamente.  
+#### Captura 5: Mover Gasto de Categoría Recalcula Ambas
+Al editar el gasto de 30 Bs y trasladarlo de *Transporte y Pasajes* a *Comida y Almuerzos*, se comprueba que **Transporte descuenta 30 Bs** y **Comida incrementa 30 Bs** simultáneamente.  
 ![Mover categoría actualiza ambas](tarea-7/tarea7-05-mover-categoria-actualiza-ambas.png)
 
-#### 6. Los Ingresos No Consumen Presupuesto
-Al registrar un ingreso de 100 Bs, el presupuesto de las categorías se mantiene completamente intacto (gasto inalterado).  
+#### Captura 6: Los Ingresos No Consumen Presupuesto
+Al registrar un ingreso de 100 Bs, el consumo de las categorías se mantiene completamente inalterado.  
 ![Ingreso no altera consumo](tarea-7/tarea7-06-ingreso-no-altera-consumo.png)
 
-#### 7. Eliminar Gasto Recalcula el Presupuesto
-Al eliminar el gasto registrado, la categoría de destino descuenta el importe y vuelve exactamente a su saldo previo (35.00 Bs).  
+#### Captura 7: Eliminar Gasto Restaura el Saldo
+Al eliminar el gasto registrado, la categoría afectada descuenta el monto y vuelve exactamente a su valor previo.  
 ![Eliminar recalcula presupuesto](tarea-7/tarea7-07-eliminar-recalcula-presupuesto.png)
 
 ---
 
-## 5. Referencias
+## 3. Resumen de Commits y Enlaces
 
-- **Feedback de origen:** Repositorio [`https://github.com/Lorgio09/proyecto2_ihc.git`](https://github.com/Lorgio09/proyecto2_ihc.git)
-- **Documento de Feedback emitido:** [`docs/clase-19-feedback-a-otr-proyecto-/Guzman-Montalvan/feedback.md`](../clase-19-feedback-a-otr-proyecto-/Guzman-Montalvan/feedback.md)
-- **Suite de Pruebas Tarea 7:** [`tests/limite-categoria-mes.spec.js`](file:///C:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/tests/limite-categoria-mes.spec.js)
+- **Commit Parte 1 (Feedback):** `91d1f52` — *feat(ux): correciones tarea-7 - renombrar boton y fecha por defecto (feedback Lorgio)*
+- **Commit Parte 2 (Nueva Funcionalidad):** `1f89d4a` — *feat: limites por categoria y mes, calculo dinamico y suite e2e tarea-7*
+- **Repositorio Remoto con cambios subidos:** [`https://github.com/MarcosLehonti/PROYECTO2-IHC.git`](https://github.com/MarcosLehonti/PROYECTO2-IHC.git)
+- **Repositorio Evaluado en Clase 19:** [`https://github.com/Lorgio09/proyecto2_ihc.git`](https://github.com/Lorgio09/proyecto2_ihc.git)
