@@ -146,7 +146,7 @@
           :disabled="esDemo"
           :title="esDemo ? 'No disponible en modo demo' : ''"
         >
-          <span class="plus-icon">+</span> Registrar Movimiento
+          <span class="plus-icon">+</span> Registrar Gasto
         </button>
       </div>
 
@@ -262,7 +262,7 @@
                 <div class="estado-vacio">
                   <span class="emoji-vacio">💳</span>
                   <p class="titulo-vacio">No hay movimientos registrados</p>
-                  <p class="subtitulo-vacio">Presiona el botón <strong>"+ Registrar Movimiento"</strong> para agregar tu primer gasto.</p>
+                  <p class="subtitulo-vacio">Presiona el botón <strong>"+ Registrar Gasto"</strong> para agregar tu primer gasto.</p>
                 </div>
               </td>
             </tr>
@@ -1259,8 +1259,8 @@ const mesesDisponibles = [
 
 const cantidadGasto = ref(null)
 const descripcionGasto = ref('')
-const diaGasto = ref(1)
-const mesGasto = ref('Octubre')
+const diaGasto = ref(hoy.getDate())
+const mesGasto = ref(mesesDisponibles[hoy.getMonth()])
 const guardandoGasto = ref(false)
 const errorMsgGasto = ref('')
 const tipoGasto = ref('gasto')
@@ -1277,7 +1277,7 @@ const excesoPreventivoGasto = computed(() => {
   const diaStr = String(diaNum).padStart(2, '0')
   const mesIdx = mesesDisponibles.indexOf(mesGasto.value) + 1
   const mesStr = String(mesIdx > 0 ? mesIdx : 10).padStart(2, '0')
-  const fechaISO = `2026-${mesStr}-${diaStr}`
+  const fechaISO = `${hoy.getFullYear()}-${mesStr}-${diaStr}`
   const gastado = gastosDelMesDe(fechaISO)
   const total = Number((gastado + Number(cantidadGasto.value)).toFixed(2))
   const limite = Number(limiteInfo.value.limite)
@@ -1335,7 +1335,7 @@ async function guardarGastoEstudiantil() {
   const diaStr = String(diaNum).padStart(2, '0')
   const mesIdx = mesesDisponibles.indexOf(mesGasto.value) + 1
   const mesStr = String(mesIdx > 0 ? mesIdx : 10).padStart(2, '0')
-  const anio = 2026
+  const anio = hoy.getFullYear()
   const fechaISO = `${anio}-${mesStr}-${diaStr}`
 
   // Regla del límite: avisar antes de enviar si el gasto superaría el límite del mes
@@ -1408,8 +1408,8 @@ async function guardarGastoEstudiantil() {
 function limpiarFormularioGasto() {
   cantidadGasto.value = null
   descripcionGasto.value = ''
-  diaGasto.value = 1
-  mesGasto.value = 'Octubre'
+  diaGasto.value = hoy.getDate()
+  mesGasto.value = mesesDisponibles[hoy.getMonth()]
   tipoGasto.value = 'gasto'
   abrirModal.value = false
 }

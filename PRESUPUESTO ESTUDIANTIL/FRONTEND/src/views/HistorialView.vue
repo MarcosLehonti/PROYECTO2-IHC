@@ -47,7 +47,7 @@
           <img :src="iconHistorial" alt="" class="vacio-icono" />
           <h3>No registraste movimientos en {{ historial.mes_texto }}</h3>
           <p>Cuando registres un gasto o un ingreso con fecha de este mes, aparecerá aquí ordenado por día.</p>
-          <button type="button" class="btn-principal" @click="irARegistrar">+ Registrar movimiento</button>
+          <button type="button" class="btn-principal" @click="irARegistrar">+ Registrar gasto</button>
         </section>
 
         <template v-else>
