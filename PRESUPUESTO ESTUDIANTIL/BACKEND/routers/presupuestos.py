@@ -1,4 +1,4 @@
-from datetime import date
+﻿from datetime import date
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, extract
@@ -52,9 +52,17 @@ def listar_presupuestos_categoria(
         monto_limite = float(pres.monto_limite) if pres else None
         
         disponible = round(monto_limite - gastado, 2) if monto_limite is not None else None
+        saldo = disponible
         porcentaje = 0.0
+        estado = "sin_limite"
         if monto_limite and monto_limite > 0:
-            porcentaje = min(round((gastado / monto_limite) * 100, 1), 100.0)
+            porcentaje = round((gastado / monto_limite) * 100, 1)
+            if gastado > monto_limite:
+                estado = "excedido"
+            elif porcentaje >= 80.0:
+                estado = "alerta"
+            else:
+                estado = "normal"
 
         resultado.append({
             "id": pres.id if pres else None,
@@ -64,7 +72,9 @@ def listar_presupuestos_categoria(
             "monto_limite": monto_limite,
             "gastado": gastado,
             "disponible": disponible,
-            "porcentaje": porcentaje,
+            "saldo": saldo,
+            "porcentaje": min(porcentaje, 100.0) if monto_limite else 0.0,
+            "estado": estado,
             "mes": mes_str
         })
 
@@ -126,7 +136,13 @@ def guardar_presupuesto_categoria(
     gastado = gasto_categoria_mes(db, usuario.id, cat.id, anio, mes_num)
     monto_limite = float(pres.monto_limite)
     disponible = round(monto_limite - gastado, 2)
-    porcentaje = min(round((gastado / monto_limite) * 100, 1), 100.0) if monto_limite > 0 else 0.0
+    saldo = disponible
+    porcentaje = round((gastado / monto_limite) * 100, 1) if monto_limite > 0 else 0.0
+    estado = "normal"
+    if gastado > monto_limite:
+        estado = "excedido"
+    elif porcentaje >= 80.0:
+        estado = "alerta"
 
     return {
         "id": pres.id,
@@ -136,7 +152,9 @@ def guardar_presupuesto_categoria(
         "monto_limite": monto_limite,
         "gastado": gastado,
         "disponible": disponible,
-        "porcentaje": porcentaje,
+        "saldo": saldo,
+        "porcentaje": min(porcentaje, 100.0) if monto_limite > 0 else 0.0,
+        "estado": estado,
         "mes": mes_str
     }
 

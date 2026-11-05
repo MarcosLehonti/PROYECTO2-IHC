@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+﻿from pydantic import BaseModel
 from typing import Optional, List, Any
 
 class UsuarioRegistro(BaseModel):
@@ -48,6 +48,7 @@ class MovimientoUpdate(BaseModel):
     descripcion: Optional[str] = None
     monto: Optional[float] = None
     fecha: Optional[str] = None
+    categoria: Optional[str] = None
 
 class MovimientoOut(BaseModel):
     id: int
@@ -130,4 +131,6 @@ class PresupuestoCategoriaOut(BaseModel):
     gastado: float = 0.0
     disponible: Optional[float] = None
     porcentaje: float = 0.0
+    saldo: Optional[float] = None
+    estado: Optional[str] = 'sin_limite'
     mes: str

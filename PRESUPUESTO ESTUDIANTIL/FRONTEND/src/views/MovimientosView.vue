@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="movimientos-page">
     <div class="container">
 
@@ -99,11 +99,17 @@
             {{ mostrarPresupuestosCat ? '▲ Ocultar presupuesto por categoría' : '▼ Ver presupuesto por categoría' }}
           </button>
           <div v-if="mostrarPresupuestosCat" class="cat-presupuestos-lista">
-            <div v-for="cat in presupuestosCat" :key="cat.categoria_id" class="cat-pres-item">
+            <div v-for="cat in presupuestosCat" :key="cat.categoria_id" :class="['cat-pres-item', 'cat-pres-item-' + (cat.estado || 'normal')]">
               <span class="cat-pres-nombre">{{ cat.categoria_nombre }}</span>
               <span class="cat-pres-monto">
                 Gastado: <strong>{{ cat.gastado.toFixed(2) }} Bs</strong>
-                <template v-if="cat.monto_limite !== null"> / Límite: {{ cat.monto_limite.toFixed(2) }} Bs ({{ cat.porcentaje }}%)</template>
+                <template v-if="cat.monto_limite !== null">
+                  / Límite: {{ cat.monto_limite.toFixed(2) }} Bs ({{ cat.porcentaje }}%)
+                  · Saldo: <strong :class="(cat.saldo !== undefined && cat.saldo !== null ? cat.saldo : (cat.monto_limite - cat.gastado)) < 0 ? 'texto-rojo' : 'texto-verde'">{{ (cat.saldo !== undefined && cat.saldo !== null ? cat.saldo : (cat.monto_limite - cat.gastado)).toFixed(2) }} Bs</strong>
+                  <span v-if="cat.estado === 'excedido'" class="badge-cat-estado badge-cat-excedido">Excedido</span>
+                  <span v-else-if="cat.estado === 'alerta'" class="badge-cat-estado badge-cat-alerta">&gt;=80%</span>
+                  <span v-else class="badge-cat-estado badge-cat-ok">Dentro del límite</span>
+                </template>
                 <template v-else> · <em>Sin límite</em></template>
               </span>
               <button type="button" class="btn-asignar-cat" @click="asignarPresupuestoCat(cat)">
@@ -707,6 +713,13 @@
               required
               class="form-input-custom"
             />
+          </div>
+
+          <div class="form-grupo-custom">
+            <label class="form-label-custom" for="editar-categoria">Categoría:</label>
+            <select id="editar-categoria" v-model="editCategoria" class="form-input-custom select-mes-custom" required>
+              <option v-for="cat in categoriasDeEdicion" :key="cat.id" :value="cat.nombre">{{ cat.nombre }}</option>
+            </select>
           </div>
 
           <div class="form-fila-fecha">
@@ -1476,10 +1489,16 @@ async function marcarComoPagado(item) {
 const movimientoEditando = ref(null)
 const editCantidad = ref(null)
 const editDescripcion = ref('')
+const editCategoria = ref('')
 const editDia = ref(1)
 const editMes = ref('Octubre')
 const guardandoEdicion = ref(false)
 const errorEdicion = ref('')
+
+const categoriasDeEdicion = computed(() => {
+  const tipo = movimientoEditando.value?.tipo || 'gasto'
+  return categorias.value.filter(c => c.tipo === tipo)
+})
 
 // Regla de estado: un movimiento pagado no permite modificar su monto
 const montoBloqueado = computed(() => movimientoEditando.value?.estado === 'pagado')
@@ -1488,6 +1507,7 @@ function abrirEdicion(item) {
   movimientoEditando.value = item
   editCantidad.value = Number(item.monto)
   editDescripcion.value = item.descripcion
+  editCategoria.value = item.categoria || ''
   const [, mes, dia] = String(item.fecha).split('-')
   editDia.value = parseInt(dia, 10) || 1
   editMes.value = mesesDisponibles[parseInt(mes, 10) - 1] || 'Octubre'
@@ -1511,11 +1531,12 @@ async function guardarEdicion() {
     return
   }
 
-  const anio = String(item.fecha).split('-')[0] || '2026'
+  const anio = String(item.fecha).split('-')[0] || String(hoy.getFullYear())
   const mesStr = String(mesesDisponibles.indexOf(editMes.value) + 1).padStart(2, '0')
   const diaStr = String(parseInt(editDia.value || 1, 10)).padStart(2, '0')
   const cambios = {
     descripcion: editDescripcion.value.trim(),
+    categoria: editCategoria.value || item.categoria,
     fecha: `${anio}-${mesStr}-${diaStr}`
   }
   if (!montoBloqueado.value) cambios.monto = Number(editCantidad.value)
@@ -1622,6 +1643,9 @@ async function sincronizarDesdeServidor(mensaje) {
   // Se guarda el estado que esta pestaña conocía para detectar pagos hechos en otra
   const estadosAntes = new Map(listaMovimientos.value.map(m => [m.id, m.estado]))
   await cargarMovimientos()
+  if (mostrarPresupuestosCat.value) {
+    await cargarPresupuestosCat()
+  }
   const pagosExternos = listaMovimientos.value
     .filter(m => estadosAntes.get(m.id) === 'pendiente' && m.estado === 'pagado')
     .map(m => `Se actualizó "${m.descripcion}" a pagado.`)
@@ -2950,6 +2974,12 @@ onUnmounted(() => {
 .cat-pres-nombre { font-weight: 500; color: #1e293b; }
 .cat-pres-monto { color: #64748b; font-size: 12px; }
 .btn-asignar-cat { background: white; border: 1px solid #cbd5e1; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; }
+.badge-cat-estado { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 9999px; margin-left: 4px; display: inline-block; }
+.badge-cat-ok { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.badge-cat-alerta { background-color: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+.badge-cat-excedido { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.texto-verde { color: #15803d; }
+.texto-rojo { color: #b91c1c; }
 .badge-recurrencia { font-size: 11px; background-color: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 9999px; padding: 1px 7px; margin-left: 6px; font-weight: 600; display: inline-block; }
 
 </style>

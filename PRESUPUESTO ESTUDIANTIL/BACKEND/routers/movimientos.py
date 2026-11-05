@@ -1,4 +1,4 @@
-from typing import Optional
+﻿from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, date, timedelta
@@ -324,6 +324,11 @@ def editar_movimiento(
             mov.fecha = datetime.strptime(datos.fecha, "%Y-%m-%d").date()
         except ValueError:
             raise HTTPException(status_code=400, detail="Fecha inválida. Usa el formato AAAA-MM-DD.")
+
+    if datos.categoria is not None:
+        cat = db.query(models.Categoria).filter(models.Categoria.nombre == datos.categoria.strip()).first()
+        if cat:
+            mov.categoria_id = cat.id
 
     if mov.tipo == "gasto":
         verificar_limite_mensual(db, usuario, mov.monto, mov.fecha, excluir_id=mov.id)
