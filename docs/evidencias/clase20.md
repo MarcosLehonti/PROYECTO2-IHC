@@ -4,7 +4,7 @@
 **Materia:** Interacción Hombre-Computador (IHC)  
 **Proyecto:** Presupuesto Estudiantil (Local)  
 **Fecha:** 5 de noviembre de 2026  
-**Commit:** [`748f4e8`](https://github.com/MarcosLehonti/PROYECTO2-IHC/commit/748f4e8)
+**Commit:** [`01362bb`](https://github.com/MarcosLehonti/PROYECTO2-IHC/commit/01362bb)
 
 ---
 
