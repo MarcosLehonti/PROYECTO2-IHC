@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640">
+  <defs>
+    <style>
+      .bg { fill: #F8FAFC; }
+      .card { fill: #FFFFFF; stroke: #E2E8F0; stroke-width: 1.5; rx: 12px; }
+      .header-card { fill: #10233F; rx: 10px; }
+      .text-title { font-family: system-ui, -apple-system, sans-serif; font-size: 20px; font-weight: 700; fill: #1E293B; }
+      .text-sub { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; fill: #64748B; }
+      .tab-bg { fill: #EFF6FF; stroke: #3B82F6; stroke-width: 2; rx: 8px; }
+      .tab-bg-inactive { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1; rx: 8px; }
+      .tab-text-active { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 700; fill: #1D4ED8; }
+      .tab-text-inactive { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 500; fill: #64748B; }
+      .badge-count { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 1; rx: 10px; }
+      .badge-count-text { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; fill: #B45309; }
+      .banner-box { fill: #FFFBEB; stroke: #FDE68A; stroke-width: 1.5; rx: 8px; }
+      .tag-ok { fill: #DCFCE7; stroke: #86EFAC; rx: 6px; }
+      .tag-pend { fill: #FEF3C7; stroke: #FCD34D; rx: 6px; }
+      .tag-text { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <!-- Fondo -->
+  <rect width="1000" height="640" class="bg"/>
+
+  <!-- Encabezado mock -->
+  <rect x="40" y="25" width="920" height="50" class="header-card"/>
+  <text x="65" y="56" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">🎓 Presupuesto Estudiantil</text>
+  <text x="750" y="56" font-family="system-ui, sans-serif" font-size="14" fill="#E2E8F0">👤 Marcos Lehonti | Salir</text>
+
+  <!-- Tarjetas resumen superiores -->
+  <rect x="40" y="95" width="290" height="85" class="card"/>
+  <text x="60" y="125" class="text-sub">Saldo Disponible</text>
+  <text x="60" y="158" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#0F172A">465.00 Bs</text>
+
+  <rect x="355" y="95" width="290" height="85" class="card"/>
+  <text x="375" y="125" class="text-sub">Ingresos del Mes</text>
+  <text x="375" y="158" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#0284C7">500.00 Bs</text>
+
+  <rect x="670" y="95" width="290" height="85" class="card"/>
+  <text x="690" y="125" class="text-sub">Gastos del Mes</text>
+  <text x="690" y="158" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#E11D48">55.00 Bs</text>
+
+  <!-- ÁREA DE PROPUESTA: PESTAÑAS DE PROPÓSITO -->
+  <rect x="40" y="205" width="920" height="405" class="card"/>
+
+  <!-- Pestañas de propósito -->
+  <rect x="60" y="225" width="230" height="42" class="tab-bg-inactive"/>
+  <text x="85" y="251" class="tab-text-inactive">📋 Todos los movimientos (12)</text>
+
+  <!-- Pestaña Activa: Pendientes de pago -->
+  <rect x="305" y="225" width="230" height="42" class="tab-bg"/>
+  <text x="330" y="251" class="tab-text-active">⏳ Pendientes de pago</text>
+  <rect x="495" y="235" width="26" height="20" class="badge-count"/>
+  <text x="504" y="249" class="badge-count-text">1</text>
+
+  <rect x="550" y="225" width="230" height="42" class="tab-bg-inactive"/>
+  <text x="575" y="251" class="tab-text-inactive">📊 Presupuesto por categoría</text>
+
+  <!-- Línea divisoria de pestañas -->
+  <line x1="60" y1="267" x2="940" y2="267" stroke="#E2E8F0" stroke-width="2"/>
+
+  <!-- Banner contextual informativo (Clase 20) -->
+  <rect x="60" y="280" width="880" height="60" class="banner-box"/>
+  <text x="80" y="316" font-size="22">⏳</text>
+  <text x="115" y="306" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#92400E">Gastos pendientes de pago</text>
+  <text x="115" y="326" font-family="system-ui, sans-serif" font-size="12" fill="#78350F">Tienes 1 gasto pendiente este mes por un total de 20.00 Bs.</text>
+
+  <!-- Tabla mock enfocada en la tarea real -->
+  <rect x="60" y="355" width="880" height="38" fill="#F1F5F9" rx="6"/>
+  <text x="80" y="379" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#475569">MOVIMIENTO</text>
+  <text x="240" y="379" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#475569">DESCRIPCIÓN</text>
+  <text x="500" y="379" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#475569">FECHA</text>
+  <text x="660" y="379" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#475569">ESTADO</text>
+  <text x="810" y="379" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#475569">ACCIÓN</text>
+
+  <!-- Fila 1 -->
+  <line x1="60" y1="440" x2="940" y2="440" stroke="#F1F5F9" stroke-width="1.5"/>
+  <text x="80" y="420" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#B45309">-20.00 Bs</text>
+  <text x="240" y="420" font-family="system-ui, sans-serif" font-size="14" fill="#1E293B">Fotocopias e impresiones</text>
+  <text x="500" y="420" font-family="system-ui, sans-serif" font-size="13" fill="#64748B">05 nov 2026</text>
+  
+  <rect x="655" y="405" width="85" height="24" class="tag-pend"/>
+  <text x="670" y="421" class="tag-text" fill="#B45309">Pendiente</text>
+
+  <rect x="790" y="402" width="140" height="30" fill="#16A34A" rx="6"/>
+  <text x="805" y="421" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Marcar como pagado</text>
+
+  <!-- Nota de diseño al pie del mockup -->
+  <rect x="60" y="470" width="880" height="120" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" rx="8"/>
+  <text x="85" y="498" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#154C86">DECISIÓN DE DISEÑO (CLASE 20 - IHC):</text>
+  <text x="85" y="522" font-family="system-ui, sans-serif" font-size="12" fill="#334155">1. ¿Qué busca? Consultar gastos pendientes de pago sin descifrar selectores complejos ni sobrecargar la vista.</text>
+  <text x="85" y="544" font-family="system-ui, sans-serif" font-size="12" fill="#334155">2. ¿Cómo lo llama? «Pendientes de pago» en lugar de filtros técnicos de base de datos («estado=pendiente»).</text>
+  <text x="85" y="566" font-family="system-ui, sans-serif" font-size="12" fill="#334155">3. ¿Dónde lo espera? Barra de pestañas por propósito que separa navegación de filtros + retorno contextual.</text>
+</svg>
+

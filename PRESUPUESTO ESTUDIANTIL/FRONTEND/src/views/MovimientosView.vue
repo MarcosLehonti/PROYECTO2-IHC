@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="movimientos-page">
     <div class="container">
 
@@ -121,6 +121,60 @@
           <!-- /// ============================================================ /// -->
         </template>
       </section>
+
+      <!-- Navegación por propósito (Clase 20: distinguir navegación entre secciones de los filtros) -->
+      <nav v-if="!esDemo" class="secciones-proposito-nav" role="tablist" aria-label="Secciones por propósito del estudiante">
+        <button
+          type="button"
+          role="tab"
+          id="tab-todos"
+          :aria-selected="seccionActiva === 'todos'"
+          :class="['tab-proposito', { 'tab-activa': seccionActiva === 'todos' }]"
+          @click="cambiarSeccion('todos')"
+        >
+          <span class="tab-icono">📋</span>
+          <span class="tab-texto">Todos los movimientos</span>
+          <span class="tab-badge-contador">{{ listaMovimientos.length }}</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          id="tab-pendientes"
+          :aria-selected="seccionActiva === 'pendientes'"
+          :class="['tab-proposito', { 'tab-activa': seccionActiva === 'pendientes' }]"
+          @click="cambiarSeccion('pendientes')"
+        >
+          <span class="tab-icono">⏳</span>
+          <span class="tab-texto">Pendientes de pago</span>
+          <span :class="['tab-badge-contador', cantidadPendientes > 0 ? 'badge-alerta-contador' : '']">{{ cantidadPendientes }}</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          id="tab-categorias"
+          :aria-selected="seccionActiva === 'categorias'"
+          :class="['tab-proposito', { 'tab-activa': seccionActiva === 'categorias' }]"
+          @click="cambiarSeccion('categorias')"
+        >
+          <span class="tab-icono">📊</span>
+          <span class="tab-texto">Presupuesto por categoría</span>
+        </button>
+      </nav>
+
+      <!-- Banner contextual para la sección Pendientes de pago -->
+      <div v-if="!esDemo && seccionActiva === 'pendientes'" class="banner-seccion-pendientes" role="status">
+        <div class="banner-pendientes-info">
+          <span class="banner-icono-alerta" aria-hidden="true">⏳</span>
+          <div>
+            <h3 class="banner-pendientes-titulo">Gastos pendientes de pago</h3>
+            <p class="banner-pendientes-desc">
+              Tienes <strong>{{ cantidadPendientes }} {{ cantidadPendientes === 1 ? 'gasto pendiente' : 'gastos pendientes' }}</strong> este mes por un total de <strong class="texto-rojo">{{ totalPendientes.toFixed(2) }} Bs</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <!-- /// [H7 - Flexibilidad y eficiencia de uso: barra de búsqueda y filtros combinables] /// -->
       <!-- Barra de acciones: buscador + botón de filtros + registrar (Issue #2) -->
@@ -1126,10 +1180,39 @@ const categoriasDelFiltro = computed(() =>
   filtros.value.tipo ? categorias.value.filter(c => c.tipo === filtros.value.tipo) : categorias.value
 )
 
-// Lo que se ve en la tabla y su total salen de la misma lista
-const listaVisible = computed(() =>
-  hayFiltrosActivos.value ? (resultadoFiltro.value?.movimientos || []) : listaMovimientos.value
+// ===================== Navegación por propósito (Clase 20) =====================
+const seccionActiva = ref('todos') // 'todos' | 'pendientes' | 'categorias'
+
+const listaPendientes = computed(() =>
+  listaMovimientos.value.filter(m => m.tipo === 'gasto' && m.estado !== 'pagado')
 )
+const cantidadPendientes = computed(() => listaPendientes.value.length)
+const totalPendientes = computed(() =>
+  listaPendientes.value.reduce((sum, m) => sum + Number(m.monto || 0), 0)
+)
+
+function cambiarSeccion(nueva) {
+  seccionActiva.value = nueva
+  if (nueva === 'categorias') {
+    mostrarPresupuestosCat.value = true
+    if (!presupuestosCat.value.length) cargarPresupuestosCat()
+  }
+}
+
+// Lo que se ve en la tabla y su total salen de la misma lista
+const listaVisible = computed(() => {
+  if (seccionActiva.value === 'pendientes') {
+    if (filtros.value.q.trim()) {
+      const q = filtros.value.q.toLowerCase().trim()
+      return listaPendientes.value.filter(m =>
+        (m.descripcion || '').toLowerCase().includes(q) ||
+        (m.categoria || '').toLowerCase().includes(q)
+      )
+    }
+    return listaPendientes.value
+  }
+  return hayFiltrosActivos.value ? (resultadoFiltro.value?.movimientos || []) : listaMovimientos.value
+})
 
 const totalesVisibles = computed(() => {
   if (hayFiltrosActivos.value && resultadoFiltro.value) return resultadoFiltro.value
@@ -2981,5 +3064,95 @@ onUnmounted(() => {
 .texto-verde { color: #15803d; }
 .texto-rojo { color: #b91c1c; }
 .badge-recurrencia { font-size: 11px; background-color: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 9999px; padding: 1px 7px; margin-left: 6px; font-weight: 600; display: inline-block; }
+
+/* ==================== Estilos Navegación por Propósito (Clase 20) ==================== */
+.secciones-proposito-nav {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0 16px 0;
+  border-bottom: 2px solid #E2E8F0;
+  padding-bottom: 2px;
+}
+
+.tab-proposito {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 18px;
+  border: none;
+  background: transparent;
+  color: #64748B;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -4px;
+  transition: all 0.2s ease;
+  border-radius: 8px 8px 0 0;
+}
+
+.tab-proposito:hover {
+  color: #1E293B;
+  background-color: #F8FAFC;
+}
+
+.tab-proposito.tab-activa {
+  color: #154C86;
+  border-bottom-color: #154C86;
+  background-color: #EFF6FF;
+}
+
+.tab-badge-contador {
+  background: #E2E8F0;
+  color: #475569;
+  font-size: 12px;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.tab-activa .tab-badge-contador {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.badge-alerta-contador {
+  background: #FEF3C7 !important;
+  color: #B45309 !important;
+  border: 1px solid #FCD34D;
+}
+
+.banner-seccion-pendientes {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-left: 5px solid #F59E0B;
+  padding: 14px 20px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+
+.banner-pendientes-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.banner-icono-alerta {
+  font-size: 24px;
+}
+
+.banner-pendientes-titulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #92400E;
+  margin: 0 0 2px 0;
+}
+
+.banner-pendientes-desc {
+  font-size: 14px;
+  color: #78350F;
+  margin: 0;
+}
 
 </style>

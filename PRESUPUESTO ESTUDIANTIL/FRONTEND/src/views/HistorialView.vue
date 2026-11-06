@@ -2,6 +2,13 @@
   <div class="historial-page">
     <div class="container historial-contenedor">
 
+      <!-- Navegación contextual: volver atrás manteniendo el contexto -->
+      <div class="navegacion-contextual-superior">
+        <router-link to="/movimientos" class="btn-volver-movimientos">
+          <span aria-hidden="true">←</span> Volver a Mis Movimientos
+        </router-link>
+      </div>
+
       <!-- Issue #12: ¿Qué movimientos tuvo el mes? -->
       <h1 class="page-title">Historial del mes</h1>
 
@@ -447,6 +454,33 @@ watch(mes, () => {
 .aviso-sin-tipo {
   margin-top: 20px;
   color: #475569;
+}
+
+.navegacion-contextual-superior {
+  margin-bottom: 16px;
+}
+
+.btn-volver-movimientos {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 6px 16px;
+  border-radius: 8px;
+  background: #F1F5F9;
+  color: #1E3350;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid #CBD5E1;
+  transition: all 0.2s ease;
+}
+
+.btn-volver-movimientos:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+  border-color: #94A3B8;
+  transform: translateX(-2px);
 }
 
 @media (max-width: 640px) {
