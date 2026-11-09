@@ -929,6 +929,100 @@
       </div>
     </div>
 
+    <!-- Modales de Metas de Ahorro (Tarea 8) -->
+    <!-- Modal Crear Meta -->
+    <div v-if="showModalCrearMeta" class="modal-overlay" @click.self="showModalCrearMeta = false">
+      <div class="modal-card dashboard-modal-card" role="dialog" aria-modal="true">
+        <h2 class="dashboard-titulo">🎯 Nueva Meta de Ahorro</h2>
+        <p class="meta-subetiqueta">Define un objetivo financiero para apartar dinero de tu saldo disponible.</p>
+        <div class="dashboard-form-group">
+          <label class="dashboard-label">Nombre de la meta</label>
+          <input v-model="nuevaMetaNombre" type="text" class="dashboard-input" placeholder="Ej. Laptop, Fondo de emergencia" />
+        </div>
+        <div class="dashboard-form-group">
+          <label class="dashboard-label">Monto objetivo (Bs)</label>
+          <input v-model="nuevaMetaMonto" type="number" step="0.01" min="1" class="dashboard-input" placeholder="0.00" />
+        </div>
+        <div class="dashboard-form-group">
+          <label class="dashboard-label">Fecha límite</label>
+          <input v-model="nuevaMetaFecha" type="date" class="dashboard-input" />
+        </div>
+        <p v-if="errorMeta" class="form-error-custom" role="alert">{{ errorMeta }}</p>
+        <div class="dashboard-modal-actions">
+          <button type="button" @click="showModalCrearMeta = false" class="btn-cancelar-modal">Cancelar</button>
+          <button type="button" class="btn-confirmar-guardar" :disabled="cargandoOpMeta" @click="guardarNuevaMeta">
+            {{ cargandoOpMeta ? 'Guardando...' : 'Crear Meta' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Asignar Fondos -->
+    <div v-if="showModalAsignar && metaSeleccionada" class="modal-overlay" @click.self="showModalAsignar = false">
+      <div class="modal-card dashboard-modal-card" role="dialog" aria-modal="true">
+        <h2 class="dashboard-titulo">📥 Asignar a {{ metaSeleccionada.nombre }}</h2>
+        <p class="meta-subetiqueta">Disponible real en cuenta: <strong>Bs {{ saldoDisponibleReal.toFixed(2) }}</strong></p>
+        <div class="dashboard-form-group">
+          <label class="dashboard-label">Monto a reservar (Bs)</label>
+          <input v-model="montoOperacion" type="number" step="0.01" min="0.01" class="dashboard-input" placeholder="0.00" />
+        </div>
+        <p v-if="errorMeta" class="form-error-custom" role="alert">{{ errorMeta }}</p>
+        <div class="dashboard-modal-actions">
+          <button type="button" @click="showModalAsignar = false" class="btn-cancelar-modal">Cancelar</button>
+          <button type="button" class="btn-confirmar-guardar" :disabled="cargandoOpMeta" @click="confirmarAsignar">
+            {{ cargandoOpMeta ? 'Asignando...' : 'Asignar fondos' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Retirar Fondos -->
+    <div v-if="showModalRetirar && metaSeleccionada" class="modal-overlay" @click.self="showModalRetirar = false">
+      <div class="modal-card dashboard-modal-card" role="dialog" aria-modal="true">
+        <h2 class="dashboard-titulo">📤 Retirar de {{ metaSeleccionada.nombre }}</h2>
+        <p class="meta-subetiqueta">Ahorrado en esta meta: <strong>Bs {{ Number(metaSeleccionada.monto_actual).toFixed(2) }}</strong></p>
+        <div class="dashboard-form-group">
+          <label class="dashboard-label">Monto a liberar (Bs)</label>
+          <input v-model="montoOperacion" type="number" step="0.01" min="0.01" :max="metaSeleccionada.monto_actual" class="dashboard-input" placeholder="0.00" />
+        </div>
+        <p v-if="errorMeta" class="form-error-custom" role="alert">{{ errorMeta }}</p>
+        <div class="dashboard-modal-actions">
+          <button type="button" @click="showModalRetirar = false" class="btn-cancelar-modal">Cancelar</button>
+          <button type="button" class="btn-confirmar-guardar" :disabled="cargandoOpMeta" @click="confirmarRetirar">
+            {{ cargandoOpMeta ? 'Retirando...' : 'Retirar al disponible' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Transferir Fondos -->
+    <div v-if="showModalTransferir && metaSeleccionada" class="modal-overlay" @click.self="showModalTransferir = false">
+      <div class="modal-card dashboard-modal-card" role="dialog" aria-modal="true">
+        <h2 class="dashboard-titulo">⇄ Transferir desde {{ metaSeleccionada.nombre }}</h2>
+        <p class="meta-subetiqueta">Disponible en meta origen: <strong>Bs {{ Number(metaSeleccionada.monto_actual).toFixed(2) }}</strong></p>
+        <div class="dashboard-form-group">
+          <label class="dashboard-label">Meta de destino</label>
+          <select v-model="metaDestinoId" class="dashboard-input">
+            <option value="" disabled>Selecciona una meta</option>
+            <option v-for="m in metasAhorro.filter(x => x.id !== metaSeleccionada.id)" :key="m.id" :value="m.id">
+              {{ m.nombre }} (Objetivo: Bs {{ Number(m.monto_objetivo).toFixed(2) }})
+            </option>
+          </select>
+        </div>
+        <div class="dashboard-form-group">
+          <label class="dashboard-label">Monto a mover (Bs)</label>
+          <input v-model="montoOperacion" type="number" step="0.01" min="0.01" :max="metaSeleccionada.monto_actual" class="dashboard-input" placeholder="0.00" />
+        </div>
+        <p v-if="errorMeta" class="form-error-custom" role="alert">{{ errorMeta }}</p>
+        <div class="dashboard-modal-actions">
+          <button type="button" @click="showModalTransferir = false" class="btn-cancelar-modal">Cancelar</button>
+          <button type="button" class="btn-confirmar-guardar" :disabled="cargandoOpMeta" @click="confirmarTransferir">
+            {{ cargandoOpMeta ? 'Transfiriendo...' : 'Confirmar transferencia' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
