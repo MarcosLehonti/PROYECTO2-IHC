@@ -92,3 +92,66 @@ def crear_meta(
 
     return schemas.MetaAhorroOut(**serializar_meta(nueva_meta))
 
+
+@router.post("/{meta_id}/asignar", response_model=schemas.MetaAhorroOut)
+def asignar_fondos_meta(
+    meta_id: int,
+    datos: schemas.MetaOperacionFondos,
+    db: Session = Depends(get_db),
+    usuario: models.Usuario = Depends(get_current_user)
+):
+    """Asigna fondos del saldo disponible a la meta, validando saldo suficiente."""
+    if datos.monto <= 0:
+        raise HTTPException(status_code=400, detail="El monto a asignar debe ser mayor a 0 Bs.")
+
+    meta = db.query(models.MetaAhorro).filter(
+        models.MetaAhorro.id == meta_id,
+        models.MetaAhorro.usuario_id == usuario.id
+    ).first()
+
+    if not meta:
+        raise HTTPException(status_code=404, detail="Meta de ahorro no encontrada.")
+
+    _, _, disponible_real = calcular_resumen_saldos(db, usuario.id)
+
+    if round(datos.monto, 2) > round(disponible_real, 2):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Fondos insuficientes: intentas apartar {datos.monto:.2f} Bs pero solo tienes {max(disponible_real, 0.0):.2f} Bs disponibles."
+        )
+
+    meta.monto_actual = float(meta.monto_actual) + round(datos.monto, 2)
+    db.commit()
+    db.refresh(meta)
+    return schemas.MetaAhorroOut(**serializar_meta(meta))
+
+@router.post("/{meta_id}/retirar", response_model=schemas.MetaAhorroOut)
+def retirar_fondos_meta(
+    meta_id: int,
+    datos: schemas.MetaOperacionFondos,
+    db: Session = Depends(get_db),
+    usuario: models.Usuario = Depends(get_current_user)
+):
+    """Devuelve fondos de la meta al saldo disponible general."""
+    if datos.monto <= 0:
+        raise HTTPException(status_code=400, detail="El monto a retirar debe ser mayor a 0 Bs.")
+
+    meta = db.query(models.MetaAhorro).filter(
+        models.MetaAhorro.id == meta_id,
+        models.MetaAhorro.usuario_id == usuario.id
+    ).first()
+
+    if not meta:
+        raise HTTPException(status_code=404, detail="Meta de ahorro no encontrada.")
+
+    actual = float(meta.monto_actual or 0)
+    if round(datos.monto, 2) > round(actual, 2):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Fondos insuficientes en la meta: intentas retirar {datos.monto:.2f} Bs pero la meta solo tiene {actual:.2f} Bs."
+        )
+
+    meta.monto_actual = round(actual - datos.monto, 2)
+    db.commit()
+    db.refresh(meta)
+    return schemas.MetaAhorroOut(**serializar_meta(meta))
