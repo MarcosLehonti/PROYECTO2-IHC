@@ -65,10 +65,12 @@ def sembrar_base_de_datos():
             db.commit()
             print(f"  [i] Usuario actualizado: {USUARIO_TEST_EMAIL}")
 
-        # 4. Limpiar movimientos previos del usuario de prueba para garantizar repetibilidad
+        # 4. Limpiar movimientos y metas previos del usuario de prueba para garantizar repetibilidad
         db.query(models.Movimiento).filter_by(usuario_id=user.id).delete()
         if hasattr(models, 'PresupuestoCategoria'):
             db.query(models.PresupuestoCategoria).filter_by(usuario_id=user.id).delete()
+        if hasattr(models, 'MetaAhorro'):
+            db.query(models.MetaAhorro).filter_by(usuario_id=user.id).delete()
         db.commit()
 
         # 5. Obtener categorias necesarias

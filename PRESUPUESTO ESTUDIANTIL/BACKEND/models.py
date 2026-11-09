@@ -33,6 +33,7 @@ class Usuario(Base):
     creado_en = Column(DateTime, default=datetime.utcnow)
 
     movimientos = relationship("Movimiento", back_populates="usuario", cascade="all, delete-orphan")  #tiene muchos movimientos, y si se borra el usuario, se borran todos sus movimientos también.
+    metas = relationship("MetaAhorro", back_populates="usuario", cascade="all, delete-orphan")
 
     @property                                                          # es un decorador de Python. Lo que hace es convertir un método en algo que se usa como si fuera un atributo
     def es_demo(self) -> bool:
@@ -79,3 +80,18 @@ class PresupuestoCategoria(Base):
 
     usuario = relationship("Usuario")
     categoria = relationship("Categoria")
+
+
+class MetaAhorro(Base):
+    __tablename__ = "metas_ahorro"
+
+    id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False, index=True)
+    nombre = Column(String(100), nullable=False)
+    monto_objetivo = Column(Numeric(10, 2), nullable=False)
+    monto_actual = Column(Numeric(10, 2), default=0.00, nullable=False)
+    fecha_limite = Column(Date, nullable=False)
+    creado_en = Column(DateTime, default=datetime.utcnow)
+
+    usuario = relationship("Usuario", back_populates="metas")
+
