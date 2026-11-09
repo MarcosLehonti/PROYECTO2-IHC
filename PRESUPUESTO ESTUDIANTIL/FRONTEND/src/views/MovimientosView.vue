@@ -3482,4 +3482,105 @@ onUnmounted(() => {
   margin: 0;
 }
 
+/* ==================== Estilos Metas de Ahorro (Tarea 8) ==================== */
+.seccion-metas-ahorro {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+.metas-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.metas-titulo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0;
+}
+.btn-nueva-meta {
+  background-color: #154C86;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-nueva-meta:hover { background-color: #0E3560; }
+.resumen-metas-banner {
+  display: flex;
+  gap: 20px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+}
+.resumen-meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #475569; }
+.resumen-meta-val { font-size: 16px; }
+.texto-azul { color: #1E40AF; }
+.estado-vacio-metas {
+  text-align: center;
+  padding: 40px 20px;
+  background: #F8FAFC;
+  border: 2px dashed #CBD5E1;
+  border-radius: 12px;
+}
+.emoji-vacio { font-size: 40px; display: block; margin-bottom: 8px; }
+.titulo-vacio { font-size: 17px; font-weight: 700; color: #334155; margin-bottom: 4px; }
+.subtitulo-vacio { font-size: 14px; color: #64748B; max-width: 420px; margin: 0 auto 16px auto; }
+.grid-metas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 16px;
+}
+.card-meta {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card-meta-cabecera { display: flex; justify-content: space-between; align-items: center; }
+.card-meta-nombre { font-size: 16px; font-weight: 700; color: #1E293B; margin: 0; }
+.badge-meta-estado { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 9999px; }
+.badge-meta-progreso { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+.badge-meta-completada { background: #DCFCE7; color: #15803D; border: 1px solid #86EFAC; }
+.card-meta-cifras { display: flex; justify-content: space-between; }
+.meta-subetiqueta { font-size: 12px; color: #64748B; display: block; }
+.meta-monto-ahorrado { font-size: 17px; }
+.meta-monto-objetivo { font-size: 17px; color: #1E293B; }
+.meta-barra-progreso { height: 10px; background: #E2E8F0; border-radius: 9999px; overflow: hidden; }
+.meta-barra-relleno { height: 100%; background: #10B981; border-radius: 9999px; transition: width 0.3s ease; }
+.card-meta-fecha { display: flex; justify-content: space-between; font-size: 12px; color: #64748B; }
+.meta-falta { color: #D97706; font-weight: 600; }
+.card-meta-acciones { display: flex; gap: 6px; margin-top: 4px; }
+.btn-accion-meta {
+  flex: 1;
+  padding: 6px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid #CBD5E1;
+  background: #F8FAFC;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-accion-meta:hover:not(:disabled) { background: #E2E8F0; }
+.btn-accion-meta:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-asignar { color: #15803D; border-color: #BBF7D0; background: #F0FDF4; }
+.btn-asignar:hover:not(:disabled) { background: #DCFCE7; }
+.btn-retirar { color: #B45309; }
+.btn-transferir { color: #1E40AF; }
+.btn-borrar-meta { flex: 0 0 32px; color: #991B1B; }
+
 </style>
