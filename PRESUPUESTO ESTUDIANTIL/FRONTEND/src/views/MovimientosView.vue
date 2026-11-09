@@ -21,6 +21,9 @@
             <span class="card-label">Saldo Disponible</span>
             <span :class="['card-amount', !esDemo && saldoTotal < 0 ? 'amount-danger' : 'amount-navy']">{{ esDemo ? `$${saldoTotal.toFixed(2)}` : `${saldoTotal.toFixed(2)} Bs` }}</span>
             <span v-if="esDemo" class="card-subtext">Actualizado hoy</span>
+            <span v-else-if="fondosReservadosMetas > 0" class="card-subtext texto-verde">
+              {{ saldoDisponibleReal.toFixed(2) }} Bs libre · ({{ fondosReservadosMetas.toFixed(2) }} Bs en metas)
+            </span>
             <span v-else-if="saldoTotal < 0" class="card-subtext texto-alerta">Registraste más gastos pagados que ingresos recibidos</span>
             <span v-else class="card-subtext">Ingresos recibidos − gastos pagados</span>
           </div>
@@ -160,6 +163,19 @@
         >
           <span class="tab-icono">📊</span>
           <span class="tab-texto">Presupuesto por categoría</span>
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          id="tab-metas"
+          :aria-selected="seccionActiva === 'metas'"
+          :class="['tab-proposito', { 'tab-activa': seccionActiva === 'metas' }]"
+          @click="cambiarSeccion('metas')"
+        >
+          <span class="tab-icono">🎯</span>
+          <span class="tab-texto">Metas de ahorro</span>
+          <span v-if="metasAhorro.length > 0" class="tab-badge-contador">{{ metasAhorro.length }}</span>
         </button>
       </nav>
 
@@ -1181,7 +1197,32 @@ const categoriasDelFiltro = computed(() =>
 )
 
 // ===================== Navegación por propósito (Clase 20) =====================
-const seccionActiva = ref('todos') // 'todos' | 'pendientes' | 'categorias'
+const seccionActiva = ref('todos') // 'todos' | 'pendientes' | 'categorias' | 'metas'
+
+// ===================== Metas de Ahorro (Tarea 8) =====================
+const metasAhorro = ref([])
+const cargandoMetas = ref(false)
+const fondosReservadosMetas = ref(0.0)
+const saldoDisponibleReal = ref(0.0)
+
+async function cargarMetas() {
+  if (esDemo) return
+  cargandoMetas.value = true
+  try {
+    const res = await fetch(`${API_URL}/metas`, { headers: authHeaders() })
+    if (res.status === 401) return sesionExpirada()
+    if (res.ok) {
+      const data = await res.json()
+      metasAhorro.value = data.metas || []
+      fondosReservadosMetas.value = Number(data.fondos_reservados || 0)
+      saldoDisponibleReal.value = Number(data.saldo_disponible_real || 0)
+    }
+  } catch (e) {
+    console.error('Error cargando metas de ahorro:', e)
+  } finally {
+    cargandoMetas.value = false
+  }
+}
 
 const listaPendientes = computed(() =>
   listaMovimientos.value.filter(m => m.tipo === 'gasto' && m.estado !== 'pagado')
@@ -1196,6 +1237,8 @@ function cambiarSeccion(nueva) {
   if (nueva === 'categorias') {
     mostrarPresupuestosCat.value = true
     if (!presupuestosCat.value.length) cargarPresupuestosCat()
+  } else if (nueva === 'metas') {
+    cargarMetas()
   }
 }
 
@@ -1726,6 +1769,7 @@ async function sincronizarDesdeServidor(mensaje) {
   // Se guarda el estado que esta pestaña conocía para detectar pagos hechos en otra
   const estadosAntes = new Map(listaMovimientos.value.map(m => [m.id, m.estado]))
   await cargarMovimientos()
+  await cargarMetas()
   if (mostrarPresupuestosCat.value) {
     await cargarPresupuestosCat()
   }
