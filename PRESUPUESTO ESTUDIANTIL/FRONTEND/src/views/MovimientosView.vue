@@ -192,9 +192,78 @@
         </div>
       </div>
 
+      <!-- SECCIÓN DEDICADA: Metas de Ahorro (Tarea 8 - Arquitectura sin ruido visual) -->
+      <section v-if="!esDemo && seccionActiva === 'metas'" class="seccion-metas-ahorro" aria-label="Metas de ahorro">
+        <div class="metas-cabecera">
+          <div>
+            <h2 class="metas-titulo">Mis Metas de Ahorro</h2>
+            <span class="card-subtext">Aparta fondos de tu saldo para objetivos futuros sin generar gastos ficticios.</span>
+          </div>
+          <button type="button" class="btn-nueva-meta" @click="abrirModalCrearMeta">
+            + Nueva Meta de Ahorro
+          </button>
+        </div>
+
+        <div class="resumen-metas-banner">
+          <div class="resumen-meta-item">
+            <span class="resumen-meta-lbl">Total apartado en metas:</span>
+            <strong class="resumen-meta-val texto-verde">{{ fondosReservadosMetas.toFixed(2) }} Bs</strong>
+          </div>
+          <div class="resumen-meta-item">
+            <span class="resumen-meta-lbl">Saldo libre disponible:</span>
+            <strong class="resumen-meta-val texto-azul">{{ saldoDisponibleReal.toFixed(2) }} Bs</strong>
+          </div>
+        </div>
+
+        <div v-if="metasAhorro.length === 0" class="estado-vacio-metas">
+          <span class="emoji-vacio">🎯</span>
+          <p class="titulo-vacio">Aún no tienes metas de ahorro</p>
+          <p class="subtitulo-vacio">Define un objetivo como una laptop o fondo de emergencia y asigna dinero de tu saldo.</p>
+          <button type="button" class="btn-nueva-meta" @click="abrirModalCrearMeta">+ Crear mi primera meta</button>
+        </div>
+
+        <div v-else class="grid-metas">
+          <div v-for="meta in metasAhorro" :key="meta.id" class="card-meta">
+            <div class="card-meta-cabecera">
+              <h3 class="card-meta-nombre">{{ meta.nombre }}</h3>
+              <span :class="['badge-meta-estado', meta.completada ? 'badge-meta-completada' : 'badge-meta-progreso']">
+                {{ meta.completada ? '¡Completada!' : `${meta.porcentaje}%` }}
+              </span>
+            </div>
+
+            <div class="card-meta-cifras">
+              <div>
+                <span class="meta-subetiqueta">Ahorrado</span>
+                <strong class="meta-monto-ahorrado texto-verde">{{ meta.monto_actual.toFixed(2) }} Bs</strong>
+              </div>
+              <div class="text-right">
+                <span class="meta-subetiqueta">Objetivo</span>
+                <strong class="meta-monto-objetivo">{{ meta.monto_objetivo.toFixed(2) }} Bs</strong>
+              </div>
+            </div>
+
+            <div class="meta-barra-progreso" role="progressbar" :aria-valuenow="meta.porcentaje" aria-valuemin="0" aria-valuemax="100">
+              <div class="meta-barra-relleno" :style="{ width: meta.porcentaje + '%' }"></div>
+            </div>
+
+            <div class="card-meta-fecha">
+              <span>Fecha objetivo: <strong>{{ meta.fecha_limite }}</strong></span>
+              <span v-if="!meta.completada" class="meta-falta">Falta: {{ meta.restante.toFixed(2) }} Bs</span>
+            </div>
+
+            <div class="card-meta-acciones">
+              <button type="button" class="btn-accion-meta btn-asignar" @click="abrirModalAsignar(meta)">+ Asignar</button>
+              <button type="button" class="btn-accion-meta btn-retirar" :disabled="meta.monto_actual <= 0" @click="abrirModalRetirar(meta)">− Retirar</button>
+              <button type="button" class="btn-accion-meta btn-transferir" :disabled="meta.monto_actual <= 0 || metasAhorro.length < 2" @click="abrirModalTransferir(meta)">⇄ Transferir</button>
+              <button type="button" class="btn-accion-meta btn-borrar-meta" @click="eliminarMetaClick(meta)" title="Eliminar meta">🗑</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- /// [H7 - Flexibilidad y eficiencia de uso: barra de búsqueda y filtros combinables] /// -->
       <!-- Barra de acciones: buscador + botón de filtros + registrar (Issue #2) -->
-      <div :class="['actions-bar', { 'actions-bar-filtros': !esDemo }]">
+      <div v-if="seccionActiva !== 'metas'" :class="['actions-bar', { 'actions-bar-filtros': !esDemo }]">
         <template v-if="!esDemo">
           <div class="buscador">
             <svg class="buscador-icono" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1222,6 +1291,126 @@ async function cargarMetas() {
   } finally {
     cargandoMetas.value = false
   }
+}
+
+// ===================== Modales Metas de Ahorro =====================
+const showModalCrearMeta = ref(false)
+const showModalAsignar = ref(false)
+const showModalRetirar = ref(false)
+const showModalTransferir = ref(false)
+const metaSeleccionada = ref(null)
+const nuevaMetaNombre = ref('')
+const nuevaMetaMonto = ref('')
+const nuevaMetaFecha = ref('')
+const montoOperacion = ref('')
+const metaDestinoId = ref('')
+const errorMeta = ref('')
+const cargandoOpMeta = ref(false)
+
+function abrirModalCrearMeta() {
+  nuevaMetaNombre.value = ''
+  nuevaMetaMonto.value = ''
+  nuevaMetaFecha.value = ''
+  errorMeta.value = ''
+  showModalCrearMeta.value = true
+}
+
+async function guardarNuevaMeta() {
+  errorMeta.value = ''
+  if (!nuevaMetaNombre.value.trim()) { errorMeta.value = 'El nombre es obligatorio.'; return }
+  if (!nuevaMetaMonto.value || Number(nuevaMetaMonto.value) <= 0) { errorMeta.value = 'Ingresa un monto objetivo válido.'; return }
+  if (!nuevaMetaFecha.value) { errorMeta.value = 'La fecha límite es obligatoria.'; return }
+  cargandoOpMeta.value = true
+  try {
+    const res = await fetch(`${API_URL}/metas`, {
+      method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nuevaMetaNombre.value.trim(), monto_objetivo: Number(nuevaMetaMonto.value), fecha_limite: nuevaMetaFecha.value })
+    })
+    if (res.status === 401) { sesionExpirada(); return }
+    if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Error al crear meta.'; return }
+    showModalCrearMeta.value = false
+    await cargarMetas()
+  } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
+}
+
+function abrirModalAsignar(meta) {
+  metaSeleccionada.value = meta
+  montoOperacion.value = ''
+  errorMeta.value = ''
+  showModalAsignar.value = true
+}
+
+async function confirmarAsignar() {
+  errorMeta.value = ''
+  if (!montoOperacion.value || Number(montoOperacion.value) <= 0) { errorMeta.value = 'Ingresa un monto válido.'; return }
+  cargandoOpMeta.value = true
+  try {
+    const res = await fetch(`${API_URL}/metas/${metaSeleccionada.value.id}/asignar`, {
+      method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ monto: Number(montoOperacion.value) })
+    })
+    if (res.status === 401) { sesionExpirada(); return }
+    if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Fondos insuficientes.'; return }
+    showModalAsignar.value = false
+    await cargarMetas()
+  } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
+}
+
+function abrirModalRetirar(meta) {
+  metaSeleccionada.value = meta
+  montoOperacion.value = ''
+  errorMeta.value = ''
+  showModalRetirar.value = true
+}
+
+async function confirmarRetirar() {
+  errorMeta.value = ''
+  if (!montoOperacion.value || Number(montoOperacion.value) <= 0) { errorMeta.value = 'Ingresa un monto válido.'; return }
+  cargandoOpMeta.value = true
+  try {
+    const res = await fetch(`${API_URL}/metas/${metaSeleccionada.value.id}/retirar`, {
+      method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ monto: Number(montoOperacion.value) })
+    })
+    if (res.status === 401) { sesionExpirada(); return }
+    if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Monto mayor al ahorrado.'; return }
+    showModalRetirar.value = false
+    await cargarMetas()
+  } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
+}
+
+function abrirModalTransferir(meta) {
+  metaSeleccionada.value = meta
+  montoOperacion.value = ''
+  metaDestinoId.value = ''
+  errorMeta.value = ''
+  showModalTransferir.value = true
+}
+
+async function confirmarTransferir() {
+  errorMeta.value = ''
+  if (!metaDestinoId.value) { errorMeta.value = 'Selecciona una meta destino.'; return }
+  if (!montoOperacion.value || Number(montoOperacion.value) <= 0) { errorMeta.value = 'Ingresa un monto válido.'; return }
+  cargandoOpMeta.value = true
+  try {
+    const res = await fetch(`${API_URL}/metas/transferir`, {
+      method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ meta_origen_id: metaSeleccionada.value.id, meta_destino_id: Number(metaDestinoId.value), monto: Number(montoOperacion.value) })
+    })
+    if (res.status === 401) { sesionExpirada(); return }
+    if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Error en transferencia.'; return }
+    showModalTransferir.value = false
+    await cargarMetas()
+  } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
+}
+
+async function eliminarMetaClick(meta) {
+  if (!confirm(`¿Eliminar la meta "${meta.nombre}"? Los fondos reservados se liberarán.`)) return
+  try {
+    const res = await fetch(`${API_URL}/metas/${meta.id}`, { method: 'DELETE', headers: authHeaders() })
+    if (res.status === 401) { sesionExpirada(); return }
+    if (res.ok) await cargarMetas()
+  } catch { alert('Error al eliminar la meta.') }
 }
 
 const listaPendientes = computed(() =>
