@@ -134,3 +134,45 @@ class PresupuestoCategoriaOut(BaseModel):
     saldo: Optional[float] = None
     estado: Optional[str] = 'sin_limite'
     mes: str
+
+
+# ===================== Metas de Ahorro (Tarea 8) =====================
+
+class MetaAhorroCreate(BaseModel):
+    nombre: str
+    monto_objetivo: float
+    fecha_limite: str  # Formato 'YYYY-MM-DD'
+
+class MetaAhorroUpdate(BaseModel):
+    nombre: Optional[str] = None
+    monto_objetivo: Optional[float] = None
+    fecha_limite: Optional[str] = None
+
+class MetaAhorroOut(BaseModel):
+    id: int
+    nombre: str
+    monto_objetivo: float
+    monto_actual: float
+    fecha_limite: str
+    porcentaje: float = 0.0
+    restante: float = 0.0
+    completada: bool = False
+    creado_en: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class MetaOperacionFondos(BaseModel):
+    monto: float
+
+class MetaTransferencia(BaseModel):
+    meta_origen_id: int
+    meta_destino_id: int
+    monto: float
+
+class ResumenMetasOut(BaseModel):
+    metas: List[MetaAhorroOut]
+    total_ahorrado: float
+    saldo_contable: float
+    fondos_reservados: float
+    saldo_disponible_real: float
