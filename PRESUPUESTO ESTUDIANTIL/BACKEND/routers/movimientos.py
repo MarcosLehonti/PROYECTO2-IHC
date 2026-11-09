@@ -1,4 +1,4 @@
-﻿from typing import Optional
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, date, timedelta
@@ -129,12 +129,17 @@ def listar_movimientos(
         date.today()  #calcular los ingresos y gastos del mes actual
     )
 
+    from routers.metas import total_fondos_reservados
+    fondos_reservados = total_fondos_reservados(db, usuario.id)
+    saldo_disponible_real = round(saldo - fondos_reservados, 2)
     return {
         "saldo_disponible": saldo,
         "ingresos_del_mes": round(ingresos, 2),
         "gastos_del_mes": round(gastos, 2),
         "resumen_mes": resumen_mes,
-        "movimientos": movimientos_out
+        "movimientos": movimientos_out,
+        "fondos_reservados": fondos_reservados,
+        "saldo_disponible_real": saldo_disponible_real
     }
 
 

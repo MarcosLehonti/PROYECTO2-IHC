@@ -155,3 +155,68 @@ def retirar_fondos_meta(
     db.commit()
     db.refresh(meta)
     return schemas.MetaAhorroOut(**serializar_meta(meta))
+@router.post("/transferir")
+def transferir_fondos_entre_metas(
+    datos: schemas.MetaTransferencia,
+    db: Session = Depends(get_db),
+    usuario: models.Usuario = Depends(get_current_user)
+):
+    """Transfiere fondos directamente entre dos metas sin alterar el saldo general."""
+    if datos.monto <= 0:
+        raise HTTPException(status_code=400, detail="El monto a transferir debe ser mayor a 0 Bs.")
+
+    if datos.meta_origen_id == datos.meta_destino_id:
+        raise HTTPException(status_code=400, detail="La meta origen y la meta destino no pueden ser la misma.")
+
+    origen = db.query(models.MetaAhorro).filter(
+        models.MetaAhorro.id == datos.meta_origen_id,
+        models.MetaAhorro.usuario_id == usuario.id
+    ).first()
+
+    destino = db.query(models.MetaAhorro).filter(
+        models.MetaAhorro.id == datos.meta_destino_id,
+        models.MetaAhorro.usuario_id == usuario.id
+    ).first()
+
+    if not origen or not destino:
+        raise HTTPException(status_code=404, detail="Una de las metas no existe o no te pertenece.")
+
+    fondos_origen = float(origen.monto_actual or 0)
+    if round(datos.monto, 2) > round(fondos_origen, 2):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Fondos insuficientes en origen: intentas transferir {datos.monto:.2f} Bs pero '{origen.nombre}' solo tiene {fondos_origen:.2f} Bs."
+        )
+
+    origen.monto_actual = round(fondos_origen - datos.monto, 2)
+    destino.monto_actual = round(float(destino.monto_actual or 0) + datos.monto, 2)
+    db.commit()
+
+    return {
+        "mensaje": f"Se transfirieron {datos.monto:.2f} Bs de '{origen.nombre}' a '{destino.nombre}'.",
+        "meta_origen": schemas.MetaAhorroOut(**serializar_meta(origen)),
+        "meta_destino": schemas.MetaAhorroOut(**serializar_meta(destino))
+    }
+
+@router.delete("/{meta_id}")
+def eliminar_meta(
+    meta_id: int,
+    db: Session = Depends(get_db),
+    usuario: models.Usuario = Depends(get_current_user)
+):
+    """Elimina una meta; sus fondos regresan de inmediato al saldo disponible."""
+    meta = db.query(models.MetaAhorro).filter(
+        models.MetaAhorro.id == meta_id,
+        models.MetaAhorro.usuario_id == usuario.id
+    ).first()
+
+    if not meta:
+        raise HTTPException(status_code=404, detail="Meta de ahorro no encontrada.")
+
+    monto_liberado = float(meta.monto_actual or 0)
+    db.delete(meta)
+    db.commit()
+
+    return {
+        "mensaje": f"Meta '{meta.nombre}' eliminada. Los {monto_liberado:.2f} Bs quedaron disponibles en tu saldo general."
+    }

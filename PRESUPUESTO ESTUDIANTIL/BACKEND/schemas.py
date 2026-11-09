@@ -74,6 +74,8 @@ class ResumenFinanciero(BaseModel):
     gastos_del_mes: float
     resumen_mes: Optional[ResumenMes] = None
     movimientos: List[MovimientoOut]
+    fondos_reservados: Optional[float] = 0.0
+    saldo_disponible_real: Optional[float] = None
 
 class ResultadoFiltro(BaseModel):
     movimientos: List[MovimientoOut]
