@@ -5,6 +5,7 @@ import RegisterView from '../views/RegisterView.vue'
 import RecuperarView from '../views/RecuperarView.vue'
 import MovimientosView from '../views/MovimientosView.vue'
 import HistorialView from '../views/HistorialView.vue'
+import EventosView from '../views/EventosView.vue'
 
 const routes = [
   {
@@ -41,6 +42,12 @@ const routes = [
     path: '/historial',
     name: 'Historial',
     component: HistorialView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/eventos',
+    name: 'Eventos',
+    component: EventosView,
     meta: { requiresAuth: true }
   },
   {

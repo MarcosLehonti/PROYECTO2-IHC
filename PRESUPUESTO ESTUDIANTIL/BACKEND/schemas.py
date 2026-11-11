@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List, Any
+from datetime import datetime
 
 class UsuarioRegistro(BaseModel):
     nombre: str
@@ -178,3 +179,16 @@ class ResumenMetasOut(BaseModel):
     saldo_contable: float
     fondos_reservados: float
     saldo_disponible_real: float
+
+class EventoCreate(BaseModel):
+    nombre: str
+    propiedades: dict = {}
+
+class EventoOut(BaseModel):
+    id: int
+    nombre: str
+    propiedades: dict
+    fecha: datetime
+
+    class Config:
+        from_attributes = True

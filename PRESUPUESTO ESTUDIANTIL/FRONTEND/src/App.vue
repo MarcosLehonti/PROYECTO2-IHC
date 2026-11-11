@@ -73,7 +73,7 @@ const primerNombre = computed(() => nombreUsuario.value.trim().split(' ')[0])
 const inicialUsuario = computed(() => nombreUsuario.value.trim().charAt(0).toUpperCase())
 
 const esRutaPrivada = computed(() => {
-  return route.path === '/movimientos' || route.path === '/historial'
+  return route.path === '/movimientos' || route.path === '/historial' || route.path === '/eventos'
 })
 
 function cargarUsuario() {

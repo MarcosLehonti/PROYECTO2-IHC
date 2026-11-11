@@ -286,7 +286,7 @@
           </button>
         </template>
         <button
-          @click="abrirModal = true"
+          @click="abrirModalGastoClick"
           class="btn-new-mov"
           :disabled="esDemo"
           :title="esDemo ? 'No disponible en modo demo' : ''"
@@ -1033,6 +1033,7 @@ import iconSaldo from '../assets/icon-saldo.png'
 import iconIngresos from '../assets/icon-ingresos.png'
 import iconGastos from '../assets/icon-gastos.png'
 import { validarLimiteMensual, convertirLimite, validarGastoConLimite } from '../utils/reglasPresupuesto'
+import { track } from '../utils/analitica'
 
 const API_URL = 'http://localhost:8000'
 const router = useRouter()
@@ -1206,12 +1207,20 @@ async function cargarPresupuestosCat() {
 async function asignarPresupuestoCat(cat) {
   const monto = prompt(`Límite mensual para ${cat.categoria_nombre} (Bs):`, cat.monto_limite || '')
   if (!monto || isNaN(monto) || Number(monto) <= 0) return
-  await fetch(`${API_URL}/presupuestos-categoria`, {
+  const res = await fetch(`${API_URL}/presupuestos-categoria`, {
     method: 'POST',
     headers: { ...authHeaders(), 'Content-Type': 'application/json' },
     body: JSON.stringify({ categoria_id: cat.categoria_id, monto_limite: Number(monto) })
   })
-  cargarPresupuestosCat()
+  if (res.ok) {
+    cargarPresupuestosCat()
+    // solo llega aquí si se guardó
+    track('presupuesto_categoria_guardado', {
+      categoria: cat.categoria_nombre,
+      mes: new Date().toISOString().substring(0, 7),
+      supera_limite: String(Number(cat.gastado || 0) > Number(monto))
+    })
+  }
 }
 
 async function cargarLimite() {
@@ -1744,6 +1753,11 @@ function formatearFechaEspanol(fechaStr) {
   return fechaStr
 }
 
+function abrirModalGastoClick() {
+  abrirModal.value = true
+  track('presupuesto_movimiento_iniciado', { tipo: 'gasto', origen: 'dashboard' })
+}
+
 async function guardarGastoEstudiantil() {
   if (!cantidadGasto.value || !descripcionGasto.value) {
     errorMsgGasto.value = 'Por favor completa la cantidad y la descripción.'
@@ -1809,6 +1823,13 @@ async function guardarGastoEstudiantil() {
       guardarEnStorage(listaMovimientos.value)
       avisarOtrasPestanas('creado', nuevoGasto.descripcion)
       await sincronizarDesdeServidor(`Se registró "${nuevoGasto.descripcion}".`)
+
+      // solo llega aquí si se guardó
+      track('presupuesto_movimiento_guardado', {
+        categoria: nuevoGasto.categoria,
+        mes: fechaISO.substring(0, 7),
+        supera_limite: String(motivoLimite ? true : false)
+      })
     } else {
       // El backend rechazó el gasto (p. ej. 409: supera el límite mensual):
       // se quita de la lista y el modal queda abierto explicando el motivo
