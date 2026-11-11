@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, DateTime, ForeignKey, UniqueConstraint, JSON
+from sqlalchemy import Column, Integer, String, Numeric, Date, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
@@ -94,17 +94,4 @@ class MetaAhorro(Base):
     creado_en = Column(DateTime, default=datetime.utcnow)
 
     usuario = relationship("Usuario", back_populates="metas")
-
-
-class Evento(Base):
-    __tablename__ = "eventos"
-
-    id = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=True, index=True)
-    nombre = Column(String(100), nullable=False, index=True)
-    propiedades = Column(JSON, default=dict, nullable=False)
-    fecha = Column(DateTime, default=datetime.utcnow)
-
-    usuario = relationship("Usuario")
-
 

@@ -3,8 +3,7 @@
     <h2>Registro de Eventos de Telemetría</h2>
     <p class="descripcion">Tabla para inspección de eventos disparados.</p>
 
-    <div v-if="cargando" class="cargando">Cargando eventos...</div>
-    <div v-else-if="eventos.length === 0" class="vacio">No hay eventos registrados aún.</div>
+    <div v-if="eventos.length === 0" class="vacio">No hay eventos registrados aún.</div>
 
     <table v-else class="tabla-eventos">
       <thead>
@@ -15,10 +14,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="e in eventos" :key="e.id">
-          <td class="nombre-evento">{{ e.nombre }}</td>
+        <tr v-for="(e, index) in eventos" :key="index">
+          <td class="nombre-evento">{{ e.evento }}</td>
           <td class="props-evento">
-            <code>{{ JSON.stringify(e.propiedades) }}</code>
+            <code>{{ JSON.stringify(e.props) }}</code>
           </td>
           <td class="fecha-evento">{{ formatearFecha(e.fecha) }}</td>
         </tr>
@@ -29,27 +28,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { obtenerEventos } from '../utils/analitica'
 
 const eventos = ref([])
-const cargando = ref(false)
 
-async function cargarEventos() {
-  cargando.value = true
-  try {
-    const token = localStorage.getItem('token')
-    const res = await fetch('http://localhost:8000/eventos', {
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      }
-    })
-    if (res.ok) {
-      eventos.value = await res.json()
-    }
-  } catch (error) {
-    console.error('Error cargando eventos:', error)
-  } finally {
-    cargando.value = false
-  }
+function cargarEventos() {
+  eventos.value = obtenerEventos()
 }
 
 function formatearFecha(f) {
@@ -124,7 +108,6 @@ h2 {
   white-space: nowrap;
 }
 
-.cargando,
 .vacio {
   padding: 20px;
   color: #64748b;
@@ -133,4 +116,3 @@ h2 {
   text-align: center;
 }
 </style>
-

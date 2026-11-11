@@ -1,18 +1,8 @@
 // analitica.js
-async function guardarEvento(registro) {
-  try {
-    const token = localStorage.getItem('token')
-    await fetch('http://localhost:8000/eventos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      },
-      body: JSON.stringify({ nombre: registro.evento, propiedades: registro.props })
-    })
-  } catch (e) {
-    console.warn('Error enviando evento al backend:', e)
-  }
+function guardarEvento(registro) {
+  const eventos = JSON.parse(localStorage.getItem('eventos') || '[]');
+  eventos.unshift(registro);
+  localStorage.setItem('eventos', JSON.stringify(eventos));
 }
 
 export function track(evento, props) {
@@ -23,3 +13,10 @@ export function track(evento, props) {
   console.log('[evento]', registro);
 }
 
+export function obtenerEventos() {
+  return JSON.parse(localStorage.getItem('eventos') || '[]');
+}
+
+export function limpiarEventos() {
+  localStorage.removeItem('eventos');
+}
