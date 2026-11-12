@@ -1249,6 +1249,7 @@ async function cargarPresupuestosCat() {
 }
 
 async function asignarPresupuestoCat(cat) {
+  track('presupuesto_categoria_asignacion_iniciada', { categoria: cat.categoria_nombre })
   const monto = prompt(`Límite mensual para ${cat.categoria_nombre} (Bs):`, cat.monto_limite || '')
   if (!monto || isNaN(monto) || Number(monto) <= 0) return
   const res = await fetch(`${API_URL}/presupuestos-categoria`, {
@@ -1460,13 +1461,26 @@ function abrirModalCrearMeta() {
   nuevaMetaFecha.value = ''
   errorMeta.value = ''
   showModalCrearMeta.value = true
+  track('presupuesto_meta_creacion_iniciada', { origen: 'dashboard_metas' })
 }
 
 async function guardarNuevaMeta() {
   errorMeta.value = ''
-  if (!nuevaMetaNombre.value.trim()) { errorMeta.value = 'El nombre es obligatorio.'; return }
-  if (!nuevaMetaMonto.value || Number(nuevaMetaMonto.value) <= 0) { errorMeta.value = 'Ingresa un monto objetivo válido.'; return }
-  if (!nuevaMetaFecha.value) { errorMeta.value = 'La fecha límite es obligatoria.'; return }
+  if (!nuevaMetaNombre.value.trim()) {
+    errorMeta.value = 'El nombre es obligatorio.'
+    track('presupuesto_meta_error_validacion', { motivo: 'nombre_vacio' })
+    return
+  }
+  if (!nuevaMetaMonto.value || Number(nuevaMetaMonto.value) <= 0) {
+    errorMeta.value = 'Ingresa un monto objetivo válido.'
+    track('presupuesto_meta_error_validacion', { motivo: 'monto_invalido' })
+    return
+  }
+  if (!nuevaMetaFecha.value) {
+    errorMeta.value = 'La fecha límite es obligatoria.'
+    track('presupuesto_meta_error_validacion', { motivo: 'fecha_vacia' })
+    return
+  }
   cargandoOpMeta.value = true
   try {
     const res = await fetch(`${API_URL}/metas`, {
@@ -1475,6 +1489,7 @@ async function guardarNuevaMeta() {
     })
     if (res.status === 401) { sesionExpirada(); return }
     if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Error al crear meta.'; return }
+    track('presupuesto_meta_creada', { meta: nuevaMetaNombre.value.trim() })
     showModalCrearMeta.value = false
     await cargarMetas()
   } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
@@ -1485,6 +1500,7 @@ function abrirModalAsignar(meta) {
   montoOperacion.value = ''
   errorMeta.value = ''
   showModalAsignar.value = true
+  track('presupuesto_meta_asignacion_iniciada', { meta: meta.nombre })
 }
 
 async function confirmarAsignar() {
@@ -1497,7 +1513,13 @@ async function confirmarAsignar() {
       body: JSON.stringify({ monto: Number(montoOperacion.value) })
     })
     if (res.status === 401) { sesionExpirada(); return }
-    if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Fondos insuficientes.'; return }
+    if (!res.ok) {
+      const d = await res.json()
+      errorMeta.value = d.detail || 'Fondos insuficientes.'
+      track('presupuesto_meta_error_fondos', { motivo: 'fondos_insuficientes', meta: metaSeleccionada.value.nombre })
+      return
+    }
+    track('presupuesto_meta_fondos_asignados', { meta: metaSeleccionada.value.nombre })
     showModalAsignar.value = false
     await cargarMetas()
   } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
@@ -1521,6 +1543,7 @@ async function confirmarRetirar() {
     })
     if (res.status === 401) { sesionExpirada(); return }
     if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Monto mayor al ahorrado.'; return }
+    track('presupuesto_meta_retiro_realizado', { meta: metaSeleccionada.value.nombre })
     showModalRetirar.value = false
     await cargarMetas()
   } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
@@ -1546,6 +1569,7 @@ async function confirmarTransferir() {
     })
     if (res.status === 401) { sesionExpirada(); return }
     if (!res.ok) { const d = await res.json(); errorMeta.value = d.detail || 'Error en transferencia.'; return }
+    track('presupuesto_meta_transferencia_realizada', { origen: metaSeleccionada.value.nombre })
     showModalTransferir.value = false
     await cargarMetas()
   } catch { errorMeta.value = 'Error de conexión.' } finally { cargandoOpMeta.value = false }
@@ -1642,6 +1666,15 @@ async function aplicarFiltros() {
       return
     }
     resultadoFiltro.value = data
+    if (hayFiltrosActivos.value) {
+      track('presupuesto_filtro_aplicado', { cantidad_filtros: String(chipsFiltros.value.length) })
+      if (!data.movimientos || data.movimientos.length === 0) {
+        track('presupuesto_busqueda_sin_resultados', {
+          motivo: 'sin_resultados',
+          tiene_texto: String(!!filtros.value.q.trim())
+        })
+      }
+    }
   } catch (e) {
     errorFiltro.value = 'No se pudo conectar con el servidor para filtrar.'
   } finally {
@@ -1854,6 +1887,12 @@ function abrirModalGastoClick() {
 async function guardarGastoEstudiantil() {
   if (!cantidadGasto.value || !descripcionGasto.value) {
     errorMsgGasto.value = 'Por favor completa la cantidad y la descripción.'
+    track('presupuesto_gasto_error_validacion', { motivo: 'campos_incompletos' })
+    return
+  }
+  if (Number(cantidadGasto.value) <= 0) {
+    errorMsgGasto.value = 'La cantidad debe ser mayor a 0.'
+    track('presupuesto_gasto_error_validacion', { motivo: 'monto_invalido' })
     return
   }
 
