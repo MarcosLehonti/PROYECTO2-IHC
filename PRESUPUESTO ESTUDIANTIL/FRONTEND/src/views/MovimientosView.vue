@@ -929,6 +929,50 @@
       </div>
     </div>
 
+    <!-- Modal: Aviso antes de superar límite por categoría (Tarea 9) -->
+    <div v-if="avisoExcesoVisible && infoAvisoExceso" class="modal-overlay" @click.self="cancelarAvisoExceso">
+      <div class="modal-card dashboard-modal-card modal-aviso-limite" role="alertdialog" aria-modal="true">
+        <h2 class="dashboard-titulo">⚠️ Aviso: Superarás el límite</h2>
+        <p class="meta-subetiqueta">
+          Este gasto hará que superes el presupuesto asignado para <strong>{{ infoAvisoExceso.categoria }}</strong>.
+        </p>
+
+        <div class="desglose-aviso-caja">
+          <div class="fila-desglose">
+            <span>Presupuesto del mes:</span>
+            <strong>{{ infoAvisoExceso.limite.toFixed(2) }} Bs</strong>
+          </div>
+          <div class="fila-desglose">
+            <span>Gastado hasta ahora:</span>
+            <span>{{ infoAvisoExceso.gastadoActual.toFixed(2) }} Bs</span>
+          </div>
+          <div class="fila-desglose">
+            <span>Nuevo gasto:</span>
+            <span>{{ infoAvisoExceso.nuevoMonto.toFixed(2) }} Bs</span>
+          </div>
+          <div class="fila-desglose fila-total-excedido">
+            <span>Total si se guarda:</span>
+            <strong>{{ infoAvisoExceso.nuevoTotal.toFixed(2) }} Bs</strong>
+          </div>
+          <div class="fila-desglose fila-cuanto-se-pasa">
+            <span>Te pasarías por:</span>
+            <strong class="texto-rojo">+{{ infoAvisoExceso.exceso.toFixed(2) }} Bs</strong>
+          </div>
+        </div>
+
+        <p class="pregunta-confirmacion">¿Deseas confirmar y guardar el gasto de todos modos?</p>
+
+        <div class="dashboard-modal-actions">
+          <button type="button" @click="cancelarAvisoExceso" class="btn-cancelar-modal btn-cancelar-aviso">
+            Cancelar (No guardar)
+          </button>
+          <button type="button" @click="confirmarAvisoExceso" class="btn-confirmar-guardar btn-confirmar-exceso">
+            Sí, confirmar y exceder
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modales de Metas de Ahorro (Tarea 8) -->
     <!-- Modal Crear Meta -->
     <div v-if="showModalCrearMeta" class="modal-overlay" @click.self="showModalCrearMeta = false">
@@ -1753,6 +1797,55 @@ function formatearFechaEspanol(fechaStr) {
   return fechaStr
 }
 
+// ==================== Tarea 9: Aviso Límite Categoría ====================
+const avisoExcesoVisible = ref(false)
+const infoAvisoExceso = ref(null)
+const confirmadoExceso = ref(false)
+
+function calcularExcesoCategoria(catNombre, monto, mesStr, excluirId = null) {
+  if (!catNombre || !monto || Number(monto) <= 0) return null
+  const pres = presupuestosCat.value.find(p => p.categoria_nombre === catNombre && Number(p.monto_limite) > 0)
+  if (!pres) return null
+  const limite = Number(pres.monto_limite)
+  const gastadoMes = listaMovimientos.value
+    .filter(m => m.tipo === 'gasto' && m.categoria === catNombre && String(m.fecha).startsWith(mesStr) && m.id !== excluirId)
+    .reduce((sum, m) => sum + Number(m.monto || 0), 0)
+  const nuevoTotal = Math.round((gastadoMes + Number(monto)) * 100) / 100
+  if (nuevoTotal > limite) {
+    return {
+      categoria: catNombre,
+      limite,
+      gastadoActual: gastadoMes,
+      nuevoMonto: Number(monto),
+      nuevoTotal,
+      exceso: Math.round((nuevoTotal - limite) * 100) / 100
+    }
+  }
+  return null
+}
+
+function cancelarAvisoExceso() {
+  track('presupuesto_gasto_cancelado_limite', {
+    motivo: 'cancelado_por_limite',
+    categoria: infoAvisoExceso.value?.categoria || ''
+  })
+  avisoExcesoVisible.value = false
+  infoAvisoExceso.value = null
+  confirmadoExceso.value = false
+}
+
+async function confirmarAvisoExceso() {
+  confirmadoExceso.value = true
+  avisoExcesoVisible.value = false
+  if (infoAvisoExceso.value?.tipoAccion === 'editar') {
+    await guardarEdicion()
+  } else {
+    await guardarGastoEstudiantil()
+  }
+  confirmadoExceso.value = false
+  infoAvisoExceso.value = null
+}
+
 function abrirModalGastoClick() {
   abrirModal.value = true
   track('presupuesto_movimiento_iniciado', { tipo: 'gasto', origen: 'dashboard' })
@@ -1782,6 +1875,23 @@ async function guardarGastoEstudiantil() {
     errorMsgGasto.value = motivoLimite
     guardandoGasto.value = false
     return
+  }
+
+  // Tarea 9: Aviso si supera el presupuesto de la categoría
+  if (tipoGasto.value === 'gasto' && !confirmadoExceso.value) {
+    const mesPrefix = `${anio}-${mesStr}`
+    const exceso = calcularExcesoCategoria(categoriaGasto.value || 'General', Number(cantidadGasto.value), mesPrefix)
+    if (exceso) {
+      infoAvisoExceso.value = { ...exceso, tipoAccion: 'crear' }
+      avisoExcesoVisible.value = true
+      track('presupuesto_limite_advertido', {
+        categoria: exceso.categoria,
+        limite: String(exceso.limite),
+        exceso: String(exceso.exceso)
+      })
+      guardandoGasto.value = false
+      return
+    }
   }
 
   const nuevoGasto = {
@@ -1971,6 +2081,23 @@ async function guardarEdicion() {
   }
   if (!montoBloqueado.value) cambios.monto = Number(editCantidad.value)
 
+  // Tarea 9: Aviso si edición supera presupuesto de categoría
+  if (item.tipo === 'gasto' && !confirmadoExceso.value) {
+    const mesPrefix = `${anio}-${mesStr}`
+    const montoNuevo = cambios.monto !== undefined ? cambios.monto : Number(item.monto)
+    const exceso = calcularExcesoCategoria(cambios.categoria, montoNuevo, mesPrefix, item.id)
+    if (exceso) {
+      infoAvisoExceso.value = { ...exceso, tipoAccion: 'editar' }
+      avisoExcesoVisible.value = true
+      track('presupuesto_limite_advertido', {
+        categoria: exceso.categoria,
+        limite: String(exceso.limite),
+        exceso: String(exceso.exceso)
+      })
+      return
+    }
+  }
+
   guardandoEdicion.value = true
   errorEdicion.value = ''
   try {
@@ -2131,6 +2258,7 @@ if (canalPestanas) {
 onMounted(() => {
   cargarMovimientos()
   cargarCategorias()
+  cargarPresupuestosCat()
   // Viene del estado vacío del historial (Issue #12): abre directo el formulario
   if (route.query.registrar) {
     abrirModal.value = true
@@ -3603,5 +3731,49 @@ onUnmounted(() => {
 .btn-retirar { color: #B45309; }
 .btn-transferir { color: #1E40AF; }
 .btn-borrar-meta { flex: 0 0 32px; color: #991B1B; }
+
+/* ==================== Estilos Aviso Exceso Límite Categoría (Tarea 9) ==================== */
+.modal-aviso-limite {
+  max-width: 480px;
+  border-top: 4px solid #F59E0B;
+}
+.desglose-aviso-caja {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fila-desglose {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #78350F;
+}
+.fila-total-excedido {
+  border-top: 1px dashed #FCD34D;
+  padding-top: 6px;
+  margin-top: 2px;
+}
+.fila-cuanto-se-pasa {
+  font-size: 14px;
+}
+.pregunta-confirmacion {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1E293B;
+  margin: 14px 0;
+  text-align: center;
+}
+.btn-confirmar-exceso {
+  background-color: #D97706 !important;
+  color: white !important;
+}
+.btn-confirmar-exceso:hover {
+  background-color: #B45309 !important;
+}
 
 </style>
