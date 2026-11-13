@@ -70,7 +70,7 @@ test.describe('Pruebas E2E - Tarea 9: Aviso de Límite por Categoría y Telemetr
     // Verificar que se abrió el modal de aviso de límite
     const modalAviso = page.locator('.modal-aviso-limite');
     await expect(modalAviso).toBeVisible({ timeout: 5000 });
-    await expect(modalAviso).toContainText('Aviso: Superarás el límite');
+    await expect(modalAviso).toContainText('Este gasto supera el presupuesto de la categoría');
 
     // Captura 2: Aviso mostrado detallando cuánto se pasaría
     await page.screenshot({ path: `${EVIDENCIAS}/02-aviso-limite-mostrado.png`, fullPage: false });
@@ -105,7 +105,7 @@ test.describe('Pruebas E2E - Tarea 9: Aviso de Límite por Categoría y Telemetr
 
     // Esperar el aviso de nuevo
     await expect(modalAviso).toBeVisible({ timeout: 5000 });
-    await expect(modalAviso).toContainText('Aviso: Superarás el límite');
+    await expect(modalAviso).toContainText('Este gasto supera el presupuesto de la categoría');
 
     // Confirmar el exceso
     const respPost3 = page.waitForResponse(

@@ -930,11 +930,12 @@
     </div>
 
     <!-- Modal: Aviso antes de superar límite por categoría (Tarea 9) -->
+    <!-- FIX(ETICA): Se eliminó confirmshaming. Texto neutro, botones simétricos. Nielsen 3. -->
     <div v-if="avisoExcesoVisible && infoAvisoExceso" class="modal-overlay" @click.self="cancelarAvisoExceso">
       <div class="modal-card dashboard-modal-card modal-aviso-limite" role="alertdialog" aria-modal="true">
-        <h2 class="dashboard-titulo">⚠️ Aviso: Superarás el límite</h2>
+        <h2 class="dashboard-titulo">ℹ️ Este gasto supera el presupuesto de la categoría</h2>
         <p class="meta-subetiqueta">
-          Este gasto hará que superes el presupuesto asignado para <strong>{{ infoAvisoExceso.categoria }}</strong>.
+          El total quedaría por encima del presupuesto que asignaste para <strong>{{ infoAvisoExceso.categoria }}</strong>. Puedes guardarlo igual o cancelar sin cambios.
         </p>
 
         <div class="desglose-aviso-caja">
@@ -955,19 +956,19 @@
             <strong>{{ infoAvisoExceso.nuevoTotal.toFixed(2) }} Bs</strong>
           </div>
           <div class="fila-desglose fila-cuanto-se-pasa">
-            <span>Te pasarías por:</span>
+            <span>Diferencia sobre el presupuesto:</span>
             <strong class="texto-rojo">+{{ infoAvisoExceso.exceso.toFixed(2) }} Bs</strong>
           </div>
         </div>
 
-        <p class="pregunta-confirmacion">¿Deseas confirmar y guardar el gasto de todos modos?</p>
+        <p class="pregunta-confirmacion">¿Qué deseas hacer?</p>
 
         <div class="dashboard-modal-actions">
           <button type="button" @click="cancelarAvisoExceso" class="btn-cancelar-modal btn-cancelar-aviso">
-            Cancelar (No guardar)
+            Cancelar
           </button>
           <button type="button" @click="confirmarAvisoExceso" class="btn-confirmar-guardar btn-confirmar-exceso">
-            Sí, confirmar y exceder
+            Guardar de todos modos
           </button>
         </div>
       </div>
