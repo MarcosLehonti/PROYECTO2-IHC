@@ -180,6 +180,15 @@
             <span class="freno-conteo texto-azul">{{ contarEvento('presupuesto_busqueda_sin_resultados') }} veces</span>
           </div>
         </div>
+
+        <div class="card-freno">
+          <div class="freno-icono">🛑</div>
+          <div class="freno-info">
+            <h4 class="freno-titulo">Baja Bloqueada por Regla</h4>
+            <p class="freno-desc">Intento de eliminación bloqueado por existencia de gastos pendientes de pago.</p>
+            <span class="freno-conteo texto-rojo">{{ contarEvento('cuenta_eliminacion_bloqueada') }} bloqueos</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -241,7 +250,7 @@ function contarEvento(nombre) {
 }
 
 function esError(nombre) {
-  return nombre.includes('error') || nombre.includes('cancelado') || nombre.includes('sin_resultados')
+  return nombre.includes('error') || nombre.includes('cancelado') || nombre.includes('sin_resultados') || nombre.includes('bloqueada')
 }
 
 function formatearFecha(iso) {
