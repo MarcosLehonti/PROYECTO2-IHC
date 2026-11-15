@@ -12,14 +12,15 @@
             <router-link to="/movimientos" class="nav-item-white" active-class="active">Mis Movimientos</router-link>
             <!-- /// [Fitts: entrada al historial siempre visible en la barra, con área de clic amplia] /// -->
             <router-link to="/historial" class="nav-item-white" active-class="active">Historial</router-link>
+            <router-link to="/cuenta" class="nav-item-white" active-class="active">Mi Cuenta y Datos</router-link>
           </nav>
         </div>
 
         <div class="nav-right">
-          <div class="user-greeting">
+          <router-link to="/cuenta" class="user-greeting user-greeting-link" title="Ver mi cuenta y datos">
             <div class="user-avatar" :title="nombreUsuario">{{ inicialUsuario }}</div>
             <span class="greeting-text">¡Hola,<br /><strong>{{ primerNombre }}!</strong></span>
-          </div>
+          </router-link>
           <button @click="cerrarSesion" class="btn-logout">Cerrar Sesión</button>
         </div>
       </div>

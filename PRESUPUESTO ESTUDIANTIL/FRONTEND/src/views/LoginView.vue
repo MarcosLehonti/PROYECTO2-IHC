@@ -15,6 +15,10 @@
         <strong>Modo demo:</strong> verás datos de ejemplo. Es solo una muestra, no podrás registrar movimientos ni cambiar la contraseña.
       </div>
 
+      <div v-if="cuentaEliminada" class="exito-alert" role="status">
+        ✓ Tu cuenta y todos tus datos fueron eliminados de forma permanente.
+      </div>
+
       <form @submit.prevent="handleLogin" class="auth-form">
 
         <div class="form-group">
@@ -88,6 +92,7 @@ const router = useRouter()
 const DEMO_EMAIL = 'estudiante@demo.com'
 const DEMO_PASSWORD = 'estudiante123'
 const esDemo = computed(() => route.query.demo === '1')
+const cuentaEliminada = computed(() => route.query.cuenta_eliminada === 'true')
 
 const email = ref('')
 const password = ref('')
@@ -261,6 +266,17 @@ async function handleLogin() {
   border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;
+}
+
+.exito-alert {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
 }
 
 .btn-submit {

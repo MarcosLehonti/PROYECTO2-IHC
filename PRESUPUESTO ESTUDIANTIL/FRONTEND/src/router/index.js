@@ -7,6 +7,7 @@ import MovimientosView from '../views/MovimientosView.vue'
 import HistorialView from '../views/HistorialView.vue'
 import EventosView from '../views/EventosView.vue'
 import AnaliticaView from '../views/AnaliticaView.vue'
+import CuentaView from '../views/CuentaView.vue'
 
 const routes = [
   {
@@ -55,6 +56,12 @@ const routes = [
     path: '/analitica',
     name: 'Analitica',
     component: AnaliticaView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/cuenta',
+    name: 'Cuenta',
+    component: CuentaView,
     meta: { requiresAuth: true }
   },
   {
