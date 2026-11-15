@@ -137,3 +137,140 @@ def restablecer_password(datos: schemas.RestablecerPassword, db: Session = Depen
 @router.get("/me", response_model=schemas.UsuarioOut)
 def obtener_perfil(usuario: models.Usuario = Depends(get_current_user)):
     return usuario
+
+
+# ============================================================================
+# TAREA 10: Portabilidad de datos y Eliminación ética de cuenta
+# ============================================================================
+
+@router.get("/exportar-datos")
+def exportar_mis_datos(
+    usuario: models.Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Exportación completa de datos del estudiante (JSON).
+    Cumple con el principio de Minimización de datos y Derecho a la Portabilidad.
+    """
+    movimientos_db = db.query(models.Movimiento).filter(
+        models.Movimiento.usuario_id == usuario.id
+    ).order_by(models.Movimiento.fecha.desc()).all()
+
+    metas_db = db.query(models.MetaAhorro).filter(
+        models.MetaAhorro.usuario_id == usuario.id
+    ).all()
+
+    presupuestos_db = db.query(models.PresupuestoCategoria).filter(
+        models.PresupuestoCategoria.usuario_id == usuario.id
+    ).all()
+
+    categorias_map = {c.id: c.nombre for c in db.query(models.Categoria).all()}
+
+    total_ingresos = sum(float(m.monto or 0) for m in movimientos_db if m.tipo == "ingreso")
+    total_gastos = sum(float(m.monto or 0) for m in movimientos_db if m.tipo == "gasto")
+    saldo_calculado = total_ingresos - total_gastos
+
+    return {
+        "usuario": {
+            "nombre": usuario.nombre,
+            "email": usuario.email,
+            "creado_en": str(usuario.creado_en) if hasattr(usuario, "creado_en") and usuario.creado_en else None
+        },
+        "resumen_financiero": {
+            "total_ingresos_bs": round(total_ingresos, 2),
+            "total_gastos_bs": round(total_gastos, 2),
+            "saldo_disponible_bs": round(saldo_calculado, 2)
+        },
+        "movimientos": [
+            {
+                "id": m.id,
+                "descripcion": m.descripcion,
+                "monto_bs": float(m.monto or 0),
+                "tipo": m.tipo,
+                "categoria": categorias_map.get(m.categoria_id, "General"),
+                "fecha": str(m.fecha),
+                "estado": m.estado,
+                "recurrencia": m.recurrencia
+            }
+            for m in movimientos_db
+        ],
+        "metas_ahorro": [
+            {
+                "id": meta.id,
+                "nombre": meta.nombre,
+                "monto_objetivo_bs": float(meta.monto_objetivo or 0),
+                "monto_actual_bs": float(meta.monto_actual or 0),
+                "fecha_limite": str(meta.fecha_limite)
+            }
+            for meta in metas_db
+        ],
+        "presupuestos_categoria": [
+            {
+                "id": p.id,
+                "categoria": categorias_map.get(p.categoria_id, "General"),
+                "monto_limite_bs": float(p.monto_limite or 0),
+                "mes": p.mes
+            }
+            for p in presupuestos_db
+        ],
+        "fecha_exportacion": datetime.utcnow().isoformat()
+    }
+
+
+@router.delete("/cuenta")
+def eliminar_cuenta_usuario(
+    usuario: models.Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Eliminación honesta de cuenta (Tarea 10):
+    - Regla difícil: Si el usuario tiene gastos pendientes de pago, la eliminación
+      se bloquea explicando el motivo y la solución requerida.
+    - Si no hay bloqueos: Se eliminan en cascada todos sus datos y la cuenta queda
+      destruida permanentemente.
+    """
+    if usuario.es_demo:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="La cuenta de demostración es compartida y no se puede eliminar."
+        )
+
+    # Regla difícil: verificar si hay gastos pendientes de pago
+    pendientes = db.query(models.Movimiento).filter(
+        models.Movimiento.usuario_id == usuario.id,
+        models.Movimiento.tipo == "gasto",
+        models.Movimiento.estado == "pendiente"
+    ).all()
+
+    if len(pendientes) > 0:
+        total_deuda = sum(float(p.monto or 0) for p in pendientes)
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                f"No puedes eliminar tu cuenta porque tienes {len(pendientes)} gasto(s) "
+                f"pendiente(s) de pago ({total_deuda:.2f} Bs). Para continuar, marca tus gastos "
+                f"como pagados o elimínalos de tu lista de movimientos."
+            )
+        )
+
+    # Si la regla se cumple (0 gastos pendientes): eliminar todo en cascada
+    db.query(models.PresupuestoCategoria).filter(
+        models.PresupuestoCategoria.usuario_id == usuario.id
+    ).delete(synchronize_session=False)
+
+    db.query(models.MetaAhorro).filter(
+        models.MetaAhorro.usuario_id == usuario.id
+    ).delete(synchronize_session=False)
+
+    db.query(models.Movimiento).filter(
+        models.Movimiento.usuario_id == usuario.id
+    ).delete(synchronize_session=False)
+
+    db.delete(usuario)
+    db.commit()
+
+    return {
+        "mensaje": "Tu cuenta y todos tus datos fueron eliminados de forma permanente. No podrás volver a iniciar sesión con estas credenciales.",
+        "eliminado": True
+    }
+
