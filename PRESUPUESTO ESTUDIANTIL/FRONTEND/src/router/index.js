@@ -50,13 +50,14 @@ const routes = [
     path: '/eventos',
     name: 'Eventos',
     component: EventosView,
-    meta: { requiresAuth: true }
+    meta: { public: true }
   },
   {
     path: '/analitica',
+    alias: '/analítica',
     name: 'Analitica',
     component: AnaliticaView,
-    meta: { requiresAuth: true }
+    meta: { public: true }
   },
   {
     path: '/cuenta',
@@ -75,9 +76,11 @@ export const router = createRouter({
   routes
 })
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 async function validarSesion(token) {
   try {
-    const res = await fetch('http://localhost:8000/auth/me', {
+    const res = await fetch(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     if (!res.ok) return false

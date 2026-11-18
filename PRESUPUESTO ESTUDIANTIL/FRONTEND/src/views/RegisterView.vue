@@ -84,6 +84,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const nombre = ref('')
 const email = ref('')
@@ -98,7 +99,7 @@ async function handleRegister() {
   successMsg.value = ''
 
   try {
-    const res = await fetch('http://localhost:8000/auth/registro', {
+    const res = await fetch(`${API_URL}/auth/registro`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

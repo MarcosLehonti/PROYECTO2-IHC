@@ -108,7 +108,7 @@ import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import iconHistorial from '../assets/icon-historial.png'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const route = useRoute()
 const router = useRouter()
 

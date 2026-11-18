@@ -12,12 +12,15 @@
         <router-link to="/movimientos" class="btn-volver-dashboard">
           ← Volver a Mis Movimientos
         </router-link>
-        <button type="button" class="btn-actualizar" @click="actualizarMetricas">
-          ↺ Actualizar
+        <button type="button" class="btn-actualizar" :disabled="actualizando" @click="actualizarMetricas">
+          <span :class="{ 'icono-girar': actualizando }">↺</span> {{ actualizando ? 'Actualizando...' : 'Actualizar' }}
         </button>
         <button type="button" class="btn-limpiar" @click="borrarHistorial">
           🗑 Limpiar datos
         </button>
+        <transition name="fade">
+          <span v-if="mensajeFeedback" class="feedback-badge">{{ mensajeFeedback }}</span>
+        </transition>
       </div>
     </div>
 
@@ -233,9 +236,19 @@ import { ref, computed, onMounted } from 'vue'
 import { obtenerEventos, limpiarEventos, calcularEmbudo } from '../utils/analitica'
 
 const listaEventos = ref([])
+const actualizando = ref(false)
+const mensajeFeedback = ref('')
 
 function actualizarMetricas() {
+  actualizando.value = true
   listaEventos.value = obtenerEventos()
+  mensajeFeedback.value = `✓ Métricas actualizadas (${listaEventos.value.length} eventos)`
+  setTimeout(() => {
+    actualizando.value = false
+  }, 400)
+  setTimeout(() => {
+    mensajeFeedback.value = ''
+  }, 2500)
 }
 
 function borrarHistorial() {
@@ -375,6 +388,44 @@ onMounted(() => {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+}
+
+.btn-actualizar:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.icono-girar {
+  display: inline-block;
+  animation: girar 0.6s linear infinite;
+}
+
+@keyframes girar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.feedback-badge {
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #86EFAC;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 
 .btn-limpiar {

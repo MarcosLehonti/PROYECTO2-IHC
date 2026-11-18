@@ -13,6 +13,7 @@
             <!-- /// [Fitts: entrada al historial siempre visible en la barra, con área de clic amplia] /// -->
             <router-link to="/historial" class="nav-item-white" active-class="active">Historial</router-link>
             <router-link to="/cuenta" class="nav-item-white" active-class="active">Mi Cuenta y Datos</router-link>
+            <router-link to="/analitica" class="nav-item-white" active-class="active">Analítica</router-link>
           </nav>
         </div>
 
@@ -74,7 +75,7 @@ const primerNombre = computed(() => nombreUsuario.value.trim().split(' ')[0])
 const inicialUsuario = computed(() => nombreUsuario.value.trim().charAt(0).toUpperCase())
 
 const esRutaPrivada = computed(() => {
-  return route.path === '/movimientos' || route.path === '/historial' || route.path === '/eventos' || route.path === '/analitica'
+  return route.path === '/movimientos' || route.path === '/historial' || route.path === '/eventos' || route.path === '/analitica' || route.path === '/cuenta'
 })
 
 function cargarUsuario() {

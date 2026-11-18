@@ -88,6 +88,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const DEMO_EMAIL = 'estudiante@demo.com'
 const DEMO_PASSWORD = 'estudiante123'
@@ -111,7 +112,7 @@ async function handleLogin() {
   errorMsg.value = ''
 
   try {
-    const res = await fetch('http://localhost:8000/auth/login', {
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value, password: password.value })

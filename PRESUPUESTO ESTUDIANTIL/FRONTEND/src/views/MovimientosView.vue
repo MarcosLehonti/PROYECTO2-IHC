@@ -1080,7 +1080,7 @@ import iconGastos from '../assets/icon-gastos.png'
 import { validarLimiteMensual, convertirLimite, validarGastoConLimite } from '../utils/reglasPresupuesto'
 import { track } from '../utils/analitica'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const router = useRouter()
 const route = useRoute()
 
