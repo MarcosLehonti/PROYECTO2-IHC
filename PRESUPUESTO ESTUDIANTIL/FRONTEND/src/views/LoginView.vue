@@ -143,11 +143,11 @@ async function handleLogin() {
   justify-content: center;
   padding: 60px 20px;
   min-height: calc(100vh - 75px);
-  background: linear-gradient(135deg, #C3D0FA 0%, #BDEFF4 40%, #B8ECF2 60%, #D8CBF7 100%);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-sky-light) 40%, var(--color-sky-light) 60%, var(--color-violet-light) 100%);
 }
 
 .auth-card {
-  background: #FFFFFF;
+  background: var(--color-surface-white);
   width: 100%;
   max-width: clamp(420px, 30vw, 580px);
   border-radius: 14px;
@@ -157,7 +157,7 @@ async function handleLogin() {
 
 .auth-tabs {
   display: flex;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: 22px;
 }
 
@@ -167,7 +167,7 @@ async function handleLogin() {
   padding: clamp(10px, 0.7vw, 13px) 0;
   font-size: clamp(15px, 1vw, 18px);
   font-weight: 500;
-  color: #64748B;
+  color: var(--color-text-muted);
   background: none;
   border: none;
   border-radius: 6px 6px 0 0;
@@ -177,12 +177,12 @@ async function handleLogin() {
 }
 
 .tab-btn.active {
-  background-color: #154C86;
-  color: #FFFFFF;
+  background-color: var(--color-brand-blue-medium);
+  color: var(--color-surface-white);
 }
 
 .tab-btn:hover:not(.active) {
-  color: #154C86;
+  color: var(--color-brand-blue-medium);
 }
 
 .auth-form {
@@ -206,20 +206,20 @@ async function handleLogin() {
 .form-label {
   font-size: clamp(14px, 0.95vw, 17px);
   font-weight: 600;
-  color: #0F172A;
+  color: var(--color-text-primary);
 }
 
 .btn-toggle-pass {
   background: none;
   border: none;
   font-size: clamp(13px, 0.85vw, 15px);
-  color: #0F172A;
+  color: var(--color-text-primary);
   font-weight: 500;
   cursor: pointer;
 }
 
 .btn-toggle-pass:hover {
-  color: #154C86;
+  color: var(--color-brand-blue-medium);
 }
 
 .input-wrapper {
@@ -232,7 +232,7 @@ async function handleLogin() {
   position: absolute;
   left: 13px;
   display: flex;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 .eye-icon {
@@ -247,16 +247,16 @@ async function handleLogin() {
   width: 100%;
   padding: clamp(10px, 0.7vw, 13px) 42px;
   font-size: clamp(14px, 0.95vw, 17px);
-  border: 1px solid #CBD5E1;
+  border: 1px solid var(--color-border-default);
   border-radius: 6px;
-  color: #334155;
-  background-color: #FFFFFF;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-white);
   transition: all 0.2s;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #2E7D9A;
+  border-color: var(--color-sky);
   box-shadow: 0 0 0 3px rgba(46, 125, 154, 0.15);
 }
 
@@ -270,9 +270,9 @@ async function handleLogin() {
 }
 
 .exito-alert {
-  background-color: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  color: #065f46;
+  background-color: var(--color-success-subtle);
+  border: 1px solid var(--color-success-border);
+  color: var(--color-success-dark);
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   font-size: 13px;
@@ -281,8 +281,8 @@ async function handleLogin() {
 }
 
 .btn-submit {
-  background-color: #2E7D9A;
-  color: #FFFFFF;
+  background-color: var(--color-sky);
+  color: var(--color-surface-white);
   border: none;
   padding: clamp(12px, 0.8vw, 15px);
   border-radius: 6px;
@@ -294,7 +294,7 @@ async function handleLogin() {
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: #24677F;
+  background-color: var(--color-brand-blue-deep);
 }
 
 .btn-submit:disabled {
@@ -303,9 +303,9 @@ async function handleLogin() {
 }
 
 .demo-alert {
-  background-color: #E0F2F7;
-  border: 1px solid #A5D8E6;
-  color: #1E4E5C;
+  background-color: var(--color-bg-page);
+  border: 1px solid var(--color-sky-light);
+  color: var(--color-brand-blue-deep);
   padding: 10px 14px;
   border-radius: 6px;
   font-size: clamp(13px, 0.85vw, 15px);
@@ -323,11 +323,11 @@ async function handleLogin() {
 
 .footer-link-text {
   font-size: clamp(13px, 0.9vw, 16px);
-  color: #0F172A;
+  color: var(--color-text-primary);
 }
 
 .link-highlight {
-  color: #154C86;
+  color: var(--color-brand-blue-medium);
   font-weight: 500;
   text-decoration: none;
 }

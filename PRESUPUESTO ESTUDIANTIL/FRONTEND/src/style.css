@@ -1,4 +1,6 @@
 
+@import "./tokens.css";
+
 :root {
   --color-navy: #0B192C;
   --color-blue-dark: #1E3E62;
@@ -65,6 +67,6 @@ button, input, select {
     radial-gradient(circle at 90% 12%, rgba(196, 181, 253, 0.45) 0%, transparent 40%),
     radial-gradient(circle at 10% 35%, rgba(186, 230, 253, 0.55) 0%, transparent 45%),
     radial-gradient(circle at 50% 80%, rgba(224, 231, 255, 0.4) 0%, transparent 50%),
-    #F8FAFC;
+    var(--color-bg-main);
   min-height: 100vh;
 }

@@ -1,0 +1,293 @@
+/**
+ * DESIGN TOKENS - PRESUPUESTO ESTUDIANTIL (IHC PROYECTO 2)
+ * Mapeo 1:1 con Figma Page 1 (Design System de los 10 Componentes)
+ * 
+ * Regla de oro: CERO COLORES FIJOS (#hex) en los componentes y vistas.
+ * Todo se consume mediante variables CSS semánticas idénticas a Figma.
+ */
+
+:root {
+  /* ========================================================
+     1. FIGMA: BRAND & NAVBAR (Componente 10: Navbar)
+     ======================================================== */
+  --color-navbar-bg: #10233F;
+  --color-navbar-text: #FFFFFF;
+  --color-navbar-border: #E2E8F0;
+  --color-brand-navy: #0B192C;
+  --color-brand-navy-dark: #10233F;
+  --color-brand-blue-dark: #1E3E62;
+  --color-brand-blue-deep: #1E3350;
+  --color-brand-blue-medium: #154C86;
+  --color-brand-blue-light: #3B78B0;
+  --color-navy: var(--color-brand-navy);
+  --color-navy-dark: var(--color-brand-navy-dark);
+  --color-blue-dark: var(--color-brand-blue-dark);
+  --color-blue-deep: var(--color-brand-blue-deep);
+
+  /* ========================================================
+     2. FIGMA: BUTTON (Componente 1: Button - 4 Variantes)
+     ======================================================== */
+  /* Primary */
+  --color-btn-primary-bg: #2563EB;
+  --color-btn-primary-text: #FFFFFF;
+  --color-btn-primary-hover: #1D4ED8;
+  --color-btn-primary-disabled: #93C5FD;
+
+  /* Secondary */
+  --color-btn-secondary-bg: #FFFFFF;
+  --color-btn-secondary-text: #475569;
+  --color-btn-secondary-border: #CBD5E1;
+  --color-btn-secondary-hover-bg: #F1F5F9;
+  --color-btn-secondary-hover-text: #1E293B;
+  --color-btn-secondary-hover-border: #94A3B8;
+  --color-btn-secondary-disabled-bg: #F8FAFC;
+  --color-btn-secondary-disabled-text: #94A3B8;
+  --color-btn-secondary-disabled-border: #E2E8F0;
+
+  /* Success */
+  --color-btn-success-bg: #16A34A;
+  --color-btn-success-text: #FFFFFF;
+  --color-btn-success-hover: #15803D;
+  --color-btn-success-disabled: #86EFAC;
+
+  /* Danger */
+  --color-btn-danger-bg: #E11D48;
+  --color-btn-danger-text: #FFFFFF;
+  --color-btn-danger-hover: #BE123C;
+  --color-btn-danger-disabled: #FDA4AF;
+
+  /* Compatibilidad general */
+  --color-primary: #1D4ED8;
+  --color-primary-hover: #1E40AF;
+  --color-primary-active: #172554;
+  --color-primary-light: #DBEAFE;
+  --color-primary-subtle: #EFF6FF;
+
+  /* ========================================================
+     3. FIGMA: STATUS BADGE (Componente 2: StatusBadge)
+     ======================================================== */
+  /* Pendiente */
+  --color-badge-pendiente-bg: #FEF3C7;
+  --color-badge-pendiente-border: #F59E0B;
+  --color-badge-pendiente-text: #78350F;
+
+  /* Pill Pendiente Activo en tabla */
+  --color-status-pending-bg: #FBBF24;
+  --color-status-pending-border: #F59E0B;
+  --color-status-pending-text: #78350F;
+  --color-status-pending-dot: #F59E0B;
+
+  /* Pagado */
+  --color-badge-pagado-bg: #DCFCE7;
+  --color-badge-pagado-border: #86EFAC;
+  --color-badge-pagado-text: #15803D;
+  --color-badge-pagado-solid: #22C55E;
+
+  /* Excedido */
+  --color-badge-excedido-bg: #FEE2E2;
+  --color-badge-excedido-border: #FECACA;
+  --color-badge-excedido-text: #B91C1C;
+
+  /* ========================================================
+     4. FIGMA: SUMMARY CARD (Componente 3: SummaryCard)
+     ======================================================== */
+  --color-card-saldo-amount: #1E3A5F;
+  --color-card-saldo-alert-bg: #FFF5F5;
+  --color-card-saldo-alert-border: #FECACA;
+  --color-card-saldo-alert-amount: #E11D48;
+
+  --color-card-ingreso-amount: #16A34A;
+  --color-card-ingreso-alert-bg: #F8FAFC;
+  --color-card-ingreso-alert-amount: #64748B;
+
+  --color-card-gasto-amount: #4A7A9B;
+  --color-card-gasto-alert-bg: #FFF5F5;
+  --color-card-gasto-alert-border: #FECACA;
+  --color-card-gasto-alert-amount: #A63A3A;
+
+  /* ========================================================
+     5. FIGMA: INPUT FIELD (Componente 4: InputField)
+     ======================================================== */
+  --color-input-default-border: #CBD5E1;
+  --color-input-default-bg: #FFFFFF;
+  --color-input-default-text: #1E293B;
+  --color-input-default-placeholder: #94A3B8;
+
+  --color-input-focus-border: #2563EB;
+  --color-input-focus-bg: #FFFFFF;
+  --color-input-focus-text: #0B192C;
+  --color-input-focus-placeholder: #64748B;
+
+  --color-input-error-border: #DC2626;
+  --color-input-error-bg: #FFF5F5;
+  --color-input-error-text: #991B1B;
+  --color-input-error-placeholder: #DC2626;
+
+  --color-input-disabled-border: #E2E8F0;
+  --color-input-disabled-bg: #F1F5F9;
+  --color-input-disabled-text: #94A3B8;
+  --color-input-disabled-placeholder: #CBD5E1;
+
+  /* ========================================================
+     6. FIGMA: ALERT BANNER (Componente 5: AlertBanner)
+     ======================================================== */
+  --color-banner-warning-bg: #FEF3C7;
+  --color-banner-warning-border: #F59E0B;
+  --color-banner-warning-text: #78350F;
+
+  --color-banner-danger-bg: #FEE2E2;
+  --color-banner-danger-border: #DC2626;
+  --color-banner-danger-text: #7F1D1D;
+
+  --color-banner-success-bg: #DCFCE7;
+  --color-banner-success-border: #16A34A;
+  --color-banner-success-text: #14532D;
+
+  --color-banner-info-bg: #E0F2FE;
+  --color-banner-info-border: #0284C7;
+  --color-banner-info-text: #075985;
+
+  /* ========================================================
+     7. FIGMA: PROGRESS BAR (Componente 7: ProgressBar)
+     ======================================================== */
+  --color-progress-track: #E2E8F0;
+  --color-progress-normal: #0284C7;
+  --color-progress-aviso: #F59E0B;
+  --color-progress-peligro: #E11D48;
+
+  /* ========================================================
+     8. FIGMA: TAB FILTER (Componente 8: TabFilter)
+     ======================================================== */
+  /* Todos */
+  --color-tab-todos-act-bg: #1D4ED8;
+  --color-tab-todos-act-text: #FFFFFF;
+  --color-tab-todos-inact-bg: #F1F5F9;
+  --color-tab-todos-inact-text: #475569;
+
+  /* Pendientes */
+  --color-tab-pendientes-act-bg: #FBBF24;
+  --color-tab-pendientes-act-text: #78350F;
+  --color-tab-pendientes-inact-bg: #FEF3C7;
+  --color-tab-pendientes-inact-text: #B45309;
+
+  /* Pagados */
+  --color-tab-pagados-act-bg: #16A34A;
+  --color-tab-pagados-act-text: #FFFFFF;
+  --color-tab-pagados-inact-bg: #F1F5F9;
+  --color-tab-pagados-inact-text: #475569;
+
+  /* Ingresos */
+  --color-tab-ingresos-act-bg: #0284C7;
+  --color-tab-ingresos-act-text: #FFFFFF;
+  --color-tab-ingresos-inact-bg: #F1F5F9;
+  --color-tab-ingresos-inact-text: #475569;
+
+  /* ========================================================
+     9. FIGMA: CATEGORY CHIP (Componente 9: CategoryChip)
+     ======================================================== */
+  --color-chip-transporte-color: #2E8BA8;
+  --color-chip-transporte-bg: #E0F2FE;
+
+  --color-chip-comida-color: #1E3A5F;
+  --color-chip-comida-bg: #BFE0F5;
+
+  --color-chip-libros-color: #8E6BBF;
+  --color-chip-libros-bg: #EDE9FE;
+
+  --color-chip-salud-color: #E11D48;
+  --color-chip-salud-bg: #FFE4E6;
+
+  --color-chip-selected-stroke: #0B192C;
+
+  /* ========================================================
+     10. SUPERFICIES, BORDES Y TEXTOS GENERALES
+     ======================================================== */
+  --color-bg-page: #EDF2F7;
+  --color-bg-main: #F8FAFC;
+  --color-bg-subtle: #F1F5F9;
+  --color-surface-white: #FFFFFF;
+  --color-surface-card: #FFFFFF;
+  --color-card-bg: #FFFFFF;
+  --color-surface-hover: #F8FAFC;
+  --color-surface-active: #F1F5F9;
+  --color-surface-muted: #E2E8F0;
+
+  --color-border-subtle: #E2E8F0;
+  --color-border-default: #CBD5E1;
+  --color-border-strong: #94A3B8;
+  --color-border-focus: #3B82F6;
+  --color-border: var(--color-border-subtle);
+
+  --color-text-main: #0B192C;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-text-subtle: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+  --color-white: #FFFFFF;
+
+  /* Estados estándar */
+  --color-success: #16A34A;
+  --color-success-hover: #15803D;
+  --color-success-dark: #166534;
+  --color-success-bg: #DCFCE7;
+  --color-success-subtle: #F0FDF4;
+  --color-success-border: #86EFAC;
+
+  --color-warning: #D97706;
+  --color-warning-hover: #B45309;
+  --color-warning-dark: #78350F;
+  --color-warning-bg: #FEF3C7;
+  --color-warning-subtle: #FFFBEB;
+  --color-warning-subtle-warm: #FFFAF0;
+  --color-orange-subtle: #FFF7ED;
+  --color-amber-soft: #FEF7E0;
+  --color-yellow-subtle: #FEF9C3;
+  --color-yellow-border: #FEF08A;
+  --color-warning-border: #F59E0B;
+  --color-amber: var(--color-warning);
+  --color-amber-light: var(--color-warning-bg);
+
+  --color-danger: #E11D48;
+  --color-danger-hover: #BE123C;
+  --color-danger-dark: #9F1239;
+  --color-danger-bg: #FEE2E2;
+  --color-danger-subtle: #FEF2F2;
+  --color-danger-border: #FECACA;
+  --color-danger-light: #FFE4E6;
+
+  --color-sky: #0284C7;
+  --color-sky-hover: #0369A1;
+  --color-sky-light: #E0F2FE;
+  --color-sky-subtle: #F0F9FF;
+
+  --color-violet: #8B5CF6;
+  --color-violet-light: #EDE9FE;
+
+  /* Categorías */
+  --color-cat-transporte-bg: var(--color-chip-transporte-bg);
+  --color-cat-transporte-text: var(--color-chip-transporte-color);
+  --color-cat-comida-bg: var(--color-chip-comida-bg);
+  --color-cat-comida-text: var(--color-chip-comida-color);
+  --color-cat-libros-bg: var(--color-chip-libros-bg);
+  --color-cat-libros-text: var(--color-chip-libros-color);
+  --color-cat-salud-bg: var(--color-chip-salud-bg);
+  --color-cat-salud-text: var(--color-chip-salud-color);
+  --color-cat-beca-bg: #DCFCE7;
+  --color-cat-beca-text: #15803D;
+
+  /* Radios y Sombras */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 2px 0 rgba(11, 25, 44, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(11, 25, 44, 0.08), 0 1px 2px -1px rgba(11, 25, 44, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(11, 25, 44, 0.07), 0 2px 4px -2px rgba(11, 25, 44, 0.05);
+  --shadow-lg: 0 10px 25px -3px rgba(11, 25, 44, 0.08), 0 4px 10px -4px rgba(11, 25, 44, 0.04);
+  --shadow-card: 0 4px 20px -2px rgba(11, 25, 44, 0.06);
+  --shadow-float: 0 20px 35px -5px rgba(11, 25, 44, 0.1), 0 10px 15px -5px rgba(11, 25, 44, 0.05);
+}

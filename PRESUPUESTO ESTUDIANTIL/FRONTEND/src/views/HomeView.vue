@@ -61,13 +61,13 @@ import iconAlertas from '../assets/icon-alertas.png'
 
 <style scoped>
 .home-page {
-  background-color: #FFFFFF;
+  background-color: var(--color-surface-white);
   min-height: calc(100vh - 75px);
   padding-bottom: 80px;
 }
 
 .hero-section {
-  background-color: #C6ECF0;
+  background-color: var(--color-sky-light);
   background-image: url('../assets/hero-banner.png');
   background-size: cover;
   background-position: right center;
@@ -88,14 +88,14 @@ import iconAlertas from '../assets/icon-alertas.png'
 .hero-title {
   font-size: clamp(40px, 3.4vw, 68px);
   font-weight: 800;
-  color: #0B2A4A;
+  color: var(--color-brand-blue-deep);
   line-height: 1.15;
   margin-bottom: 18px;
 }
 
 .hero-subtitle {
   font-size: clamp(17px, 1.25vw, 24px);
-  color: #1E293B;
+  color: var(--color-text-secondary);
   line-height: 1.55;
   margin-bottom: 32px;
 }
@@ -107,8 +107,8 @@ import iconAlertas from '../assets/icon-alertas.png'
 }
 
 .btn-primary-hero {
-  background-color: #154C86;
-  color: #FFFFFF;
+  background-color: var(--color-brand-blue-medium);
+  color: var(--color-surface-white);
   padding: clamp(14px, 0.9vw, 18px) clamp(34px, 2.4vw, 46px);
   border-radius: 999px;
   font-size: clamp(16px, 1.05vw, 20px);
@@ -118,14 +118,14 @@ import iconAlertas from '../assets/icon-alertas.png'
 }
 
 .btn-primary-hero:hover {
-  background-color: #0F3A68;
+  background-color: var(--color-brand-blue-medium);
   transform: translateY(-2px);
 }
 
 .btn-demo-hero {
   background-color: rgba(255, 255, 255, 0.7);
-  color: #0F766E;
-  border: 2px solid #14A098;
+  color: var(--color-sky-hover);
+  border: 2px solid var(--color-sky);
   padding: clamp(11px, 0.75vw, 15px) clamp(22px, 1.5vw, 28px) clamp(11px, 0.75vw, 15px) clamp(28px, 2vw, 38px);
   border-radius: 999px;
   font-size: clamp(16px, 1.05vw, 20px);
@@ -137,13 +137,13 @@ import iconAlertas from '../assets/icon-alertas.png'
 }
 
 .btn-demo-hero:hover {
-  background-color: #FFFFFF;
+  background-color: var(--color-surface-white);
 }
 
 .play-circle {
   width: clamp(24px, 1.5vw, 28px);
   height: clamp(24px, 1.5vw, 28px);
-  border: 2px solid #14A098;
+  border: 2px solid var(--color-sky);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -160,11 +160,11 @@ import iconAlertas from '../assets/icon-alertas.png'
 }
 
 .feature-card {
-  background: #FFFFFF;
+  background: var(--color-surface-white);
   border-radius: 14px;
   padding: clamp(26px, 1.8vw, 36px) clamp(26px, 1.8vw, 36px) clamp(30px, 2vw, 40px);
   box-shadow: 0 6px 20px rgba(11, 42, 74, 0.1);
-  border: 1px solid #EEF2F6;
+  border: 1px solid var(--color-bg-page);
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
@@ -183,13 +183,13 @@ import iconAlertas from '../assets/icon-alertas.png'
 .feature-title {
   font-size: clamp(20px, 1.35vw, 26px);
   font-weight: 800;
-  color: #0B2A4A;
+  color: var(--color-brand-blue-deep);
   margin-bottom: 8px;
 }
 
 .feature-desc {
   font-size: clamp(15px, 0.95vw, 18px);
-  color: #334155;
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 

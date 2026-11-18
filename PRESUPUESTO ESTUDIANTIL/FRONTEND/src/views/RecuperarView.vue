@@ -255,11 +255,11 @@ async function guardarNuevaPassword() {
   justify-content: center;
   padding: 60px 20px;
   min-height: calc(100vh - 75px);
-  background: linear-gradient(135deg, #C3D0FA 0%, #BDEFF4 40%, #B8ECF2 60%, #D8CBF7 100%);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-sky-light) 40%, var(--color-sky-light) 60%, var(--color-violet-light) 100%);
 }
 
 .auth-card {
-  background: #FFFFFF;
+  background: var(--color-surface-white);
   width: 100%;
   max-width: clamp(420px, 30vw, 580px);
   border-radius: 14px;
@@ -296,11 +296,11 @@ async function guardarNuevaPassword() {
   width: 36px;
   height: 5px;
   border-radius: 3px;
-  background-color: #E2E8F0;
+  background-color: var(--color-border-subtle);
 }
 
 .step-dot.step-active {
-  background-color: #2E7D9A;
+  background-color: var(--color-sky);
 }
 
 .auth-form {
@@ -318,7 +318,7 @@ async function guardarNuevaPassword() {
 .form-label {
   font-size: clamp(14px, 0.95vw, 17px);
   font-weight: 600;
-  color: #0F172A;
+  color: var(--color-text-primary);
 }
 
 .input-wrapper {
@@ -331,23 +331,23 @@ async function guardarNuevaPassword() {
   position: absolute;
   left: 13px;
   display: flex;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 .form-input {
   width: 100%;
   padding: clamp(10px, 0.7vw, 13px) 42px;
   font-size: clamp(14px, 0.95vw, 17px);
-  border: 1px solid #CBD5E1;
+  border: 1px solid var(--color-border-default);
   border-radius: 6px;
-  color: #334155;
-  background-color: #FFFFFF;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-white);
   transition: all 0.2s;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #2E7D9A;
+  border-color: var(--color-sky);
   box-shadow: 0 0 0 3px rgba(46, 125, 154, 0.15);
 }
 
@@ -367,21 +367,21 @@ async function guardarNuevaPassword() {
   text-align: center;
   font-size: clamp(26px, 1.8vw, 32px);
   font-weight: 700;
-  color: #154C86;
-  border: 1.5px solid #CBD5E1;
+  color: var(--color-brand-blue-medium);
+  border: 1.5px solid var(--color-border-default);
   border-radius: 8px;
   transition: all 0.2s;
 }
 
 .code-box:focus {
   outline: none;
-  border-color: #2E7D9A;
+  border-color: var(--color-sky);
   box-shadow: 0 0 0 3px rgba(46, 125, 154, 0.15);
 }
 
 .info-alert {
   background-color: var(--color-sky-light);
-  color: #0369A1;
+  color: var(--color-sky-hover);
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   font-size: 13px;
@@ -398,7 +398,7 @@ async function guardarNuevaPassword() {
 }
 
 .success-alert {
-  background-color: #DCFCE7;
+  background-color: var(--color-success-bg);
   color: var(--color-success);
   padding: 10px 14px;
   border-radius: var(--radius-sm);
@@ -407,8 +407,8 @@ async function guardarNuevaPassword() {
 }
 
 .btn-submit {
-  background-color: #2E7D9A;
-  color: #FFFFFF;
+  background-color: var(--color-sky);
+  color: var(--color-surface-white);
   border: none;
   padding: clamp(12px, 0.8vw, 15px);
   border-radius: 6px;
@@ -420,7 +420,7 @@ async function guardarNuevaPassword() {
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: #24677F;
+  background-color: var(--color-brand-blue-deep);
 }
 
 .btn-submit:disabled {
@@ -438,7 +438,7 @@ async function guardarNuevaPassword() {
 }
 
 .separator {
-  color: #94A3B8;
+  color: var(--color-border-strong);
   margin: 0 6px;
 }
 
@@ -448,7 +448,7 @@ async function guardarNuevaPassword() {
 }
 
 .link-highlight {
-  color: #154C86;
+  color: var(--color-brand-blue-medium);
   font-weight: 500;
   text-decoration: none;
 }

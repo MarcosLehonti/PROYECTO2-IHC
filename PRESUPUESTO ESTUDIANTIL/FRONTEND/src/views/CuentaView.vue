@@ -427,13 +427,13 @@ onMounted(() => {
 .cuenta-titulo {
   font-size: 26px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text-primary);
   margin: 0 0 6px 0;
 }
 
 .cuenta-subtitulo {
   font-size: 14px;
-  color: #64748b;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -441,25 +441,25 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
-  background-color: #f1f5f9;
-  color: #334155;
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-border-default);
   transition: all 0.2s;
 }
 
 .btn-volver-dashboard:hover {
-  background-color: #e2e8f0;
-  color: #0f172a;
+  background-color: var(--color-border-subtle);
+  color: var(--color-text-primary);
 }
 
 .alerta-exito {
-  background-color: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
+  background-color: var(--color-success-subtle);
+  color: var(--color-success-dark);
+  border: 1px solid var(--color-success-border);
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -468,9 +468,9 @@ onMounted(() => {
 }
 
 .alerta-error {
-  background-color: #fef2f2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background-color: var(--color-danger-subtle);
+  color: var(--color-danger-dark);
+  border: 1px solid var(--color-danger-border);
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -479,9 +479,9 @@ onMounted(() => {
 }
 
 .tarjeta-cuenta {
-  background: #ffffff;
+  background: var(--color-surface-white);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border-subtle);
   padding: 24px;
   margin-bottom: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -499,28 +499,28 @@ onMounted(() => {
 .seccion-titulo {
   font-size: 18px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-text-secondary);
   margin: 0 0 12px 0;
 }
 
 .texto-peligro {
-  color: #b91c1c;
+  color: var(--color-danger-hover);
 }
 
 .badge-derecho {
   display: inline-block;
-  background-color: #eff6ff;
-  color: #1d4ed8;
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary);
   font-size: 12px;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 20px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid var(--color-primary-light);
 }
 
 .seccion-descripcion {
   font-size: 14px;
-  color: #475569;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 20px;
 }
@@ -539,25 +539,25 @@ onMounted(() => {
 
 .campo-etiqueta {
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-muted);
   font-weight: 500;
 }
 
 .campo-valor {
   font-size: 15px;
-  color: #0f172a;
+  color: var(--color-text-primary);
 }
 
 .badge-cuenta-activa {
   display: inline-block;
   width: fit-content;
-  background-color: #f0fdf4;
-  color: #166534;
+  background-color: var(--color-success-subtle);
+  color: var(--color-success-dark);
   font-size: 12px;
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 6px;
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--color-success-border);
 }
 
 .botones-descarga {
@@ -580,21 +580,21 @@ onMounted(() => {
 }
 
 .btn-descarga-json {
-  background-color: #0284c7;
-  color: #ffffff;
+  background-color: var(--color-sky);
+  color: var(--color-surface-white);
 }
 
 .btn-descarga-json:hover:not(:disabled) {
-  background-color: #0369a1;
+  background-color: var(--color-sky-hover);
 }
 
 .btn-descarga-csv {
-  background-color: #0d9488;
-  color: #ffffff;
+  background-color: var(--color-sky);
+  color: var(--color-surface-white);
 }
 
 .btn-descarga-csv:hover:not(:disabled) {
-  background-color: #0f766e;
+  background-color: var(--color-sky-hover);
 }
 
 .btn-descarga:disabled {
@@ -603,24 +603,24 @@ onMounted(() => {
 }
 
 .tarjeta-zona-peligro {
-  border-color: #fca5a5;
-  background-color: #fffaf0;
+  border-color: var(--color-danger-border);
+  background-color: var(--color-warning-subtle-warm);
 }
 
 .aviso-regla-app {
-  background-color: #fff7ed;
-  border-left: 4px solid #ea580c;
+  background-color: var(--color-orange-subtle);
+  border-left: 4px solid var(--color-warning);
   padding: 12px 16px;
   font-size: 13px;
-  color: #7c2d12;
+  color: var(--color-danger-dark);
   margin-bottom: 20px;
   border-radius: 4px;
 }
 
 .btn-solicitar-baja {
   padding: 10px 20px;
-  background-color: #ef4444;
-  color: #ffffff;
+  background-color: var(--color-danger);
+  color: var(--color-surface-white);
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -630,7 +630,7 @@ onMounted(() => {
 }
 
 .btn-solicitar-baja:hover {
-  background-color: #dc2626;
+  background-color: var(--color-danger);
 }
 
 /* Modales */
@@ -646,36 +646,36 @@ onMounted(() => {
 }
 
 .modal-confirmacion-honesta {
-  background: #ffffff;
+  background: var(--color-surface-white);
   border-radius: 14px;
   padding: 28px;
   max-width: 540px;
   width: 100%;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .modal-titulo-honesto {
   font-size: 20px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text-primary);
   margin: 0 0 14px 0;
 }
 
 .modal-descripcion-honesta {
   font-size: 14px;
-  color: #475569;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 16px;
 }
 
 .lista-consecuencias {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-bg-main);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 8px;
   padding: 14px 18px 14px 34px;
   font-size: 13px;
-  color: #334155;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 20px;
 }
@@ -683,16 +683,16 @@ onMounted(() => {
 .pregunta-decision {
   font-size: 14px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-text-secondary);
   margin-bottom: 20px;
   text-align: center;
 }
 
 .texto-bloqueo {
   font-size: 14px;
-  color: #991b1b;
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  color: var(--color-danger-dark);
+  background-color: var(--color-danger-subtle);
+  border: 1px solid var(--color-danger-border);
   padding: 12px 16px;
   border-radius: 8px;
   line-height: 1.5;
@@ -701,18 +701,18 @@ onMounted(() => {
 }
 
 .caja-instrucciones-bloqueo {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-bg-main);
+  border: 1px solid var(--color-border-subtle);
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 13px;
-  color: #334155;
+  color: var(--color-text-secondary);
   margin-bottom: 24px;
 }
 
 .caja-instrucciones-bloqueo p {
   margin: 6px 0 0 0;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 /* Principio de botones simétricos del mismo tamaño (Nielsen 3 y 5) */
@@ -739,32 +739,32 @@ onMounted(() => {
 }
 
 .btn-modal-cancelar {
-  background-color: #f1f5f9;
-  color: #334155;
-  border-color: #cbd5e1;
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-default);
 }
 
 .btn-modal-cancelar:hover:not(:disabled) {
-  background-color: #e2e8f0;
-  color: #0f172a;
+  background-color: var(--color-border-subtle);
+  color: var(--color-text-primary);
 }
 
 .btn-modal-confirmar-baja {
-  background-color: #dc2626;
-  color: #ffffff;
+  background-color: var(--color-danger);
+  color: var(--color-surface-white);
 }
 
 .btn-modal-confirmar-baja:hover:not(:disabled) {
-  background-color: #b91c1c;
+  background-color: var(--color-danger-hover);
 }
 
 .btn-modal-resolver {
-  background-color: #2563eb;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-surface-white);
 }
 
 .btn-modal-resolver:hover {
-  background-color: #1d4ed8;
+  background-color: var(--color-primary);
 }
 
 .btn-accion-modal:disabled {

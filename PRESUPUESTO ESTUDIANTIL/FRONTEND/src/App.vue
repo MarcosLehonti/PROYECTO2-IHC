@@ -119,8 +119,8 @@ onMounted(() => {
 }
 
 .navbar-navy {
-  background-color: #10233F;
-  color: #FFFFFF;
+  background-color: var(--color-brand-navy-dark);
+  color: var(--color-surface-white);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
@@ -161,7 +161,7 @@ onMounted(() => {
   min-height: 44px;
   padding: 0 clamp(10px, 0.9vw, 16px);
   border-radius: 8px;
-  color: #E2E8F0;
+  color: var(--color-border-subtle);
   font-size: clamp(14px, 0.95vw, 17px);
   font-weight: 400;
   text-decoration: none;
@@ -169,7 +169,7 @@ onMounted(() => {
 }
 
 .nav-item-white:hover, .nav-item-white.active {
-  color: #FFFFFF;
+  color: var(--color-surface-white);
   font-weight: 500;
   background: rgba(255, 255, 255, 0.1);
 }
@@ -190,9 +190,9 @@ onMounted(() => {
   width: clamp(38px, 2.6vw, 46px);
   height: clamp(38px, 2.6vw, 46px);
   border-radius: 50%;
-  background-color: #2E7D9A;
+  background-color: var(--color-sky);
   border: 2px solid rgba(255, 255, 255, 0.7);
-  color: #FFFFFF;
+  color: var(--color-surface-white);
   font-size: clamp(17px, 1.2vw, 21px);
   font-weight: 700;
   display: flex;
@@ -204,16 +204,16 @@ onMounted(() => {
 .greeting-text {
   font-size: clamp(14px, 0.95vw, 17px);
   line-height: 1.25;
-  color: #E2E8F0;
+  color: var(--color-border-subtle);
 }
 
 .greeting-text strong {
-  color: #FFFFFF;
+  color: var(--color-surface-white);
 }
 
 .btn-logout {
   background: transparent;
-  color: #FFFFFF;
+  color: var(--color-surface-white);
   border: 1px solid rgba(255, 255, 255, 0.7);
   padding: clamp(8px, 0.6vw, 11px) clamp(16px, 1.2vw, 22px);
   border-radius: 6px;
@@ -225,11 +225,11 @@ onMounted(() => {
 
 .btn-logout:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: #FFFFFF;
+  border-color: var(--color-surface-white);
 }
 
 .navbar-light {
-  background-color: #FFFFFF;
+  background-color: var(--color-surface-white);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -258,7 +258,7 @@ onMounted(() => {
 }
 
 .nav-link {
-  color: #0B2A4A;
+  color: var(--color-brand-blue-deep);
   font-size: clamp(15px, 1vw, 19px);
   font-weight: 500;
   text-decoration: none;
@@ -266,7 +266,7 @@ onMounted(() => {
 }
 
 .nav-link:hover, .nav-link.active {
-  color: #14A098;
+  color: var(--color-sky);
 }
 
 .nav-actions {
@@ -288,8 +288,8 @@ onMounted(() => {
 }
 
 .btn-login-outline {
-  color: #154C86;
-  border: 2px solid #154C86;
+  color: var(--color-brand-blue-medium);
+  border: 2px solid var(--color-brand-blue-medium);
   padding: clamp(8px, 0.6vw, 11px) clamp(20px, 1.5vw, 28px);
   border-radius: 10px;
   font-size: clamp(14px, 0.95vw, 18px);
@@ -299,14 +299,14 @@ onMounted(() => {
 }
 
 .btn-login-outline:hover {
-  background-color: #154C86;
+  background-color: var(--color-brand-blue-medium);
   color: white;
 }
 
 .btn-register-solid {
-  background-color: #154C86;
+  background-color: var(--color-brand-blue-medium);
   color: white;
-  border: 2px solid #154C86;
+  border: 2px solid var(--color-brand-blue-medium);
   padding: clamp(8px, 0.6vw, 11px) clamp(20px, 1.5vw, 28px);
   border-radius: 10px;
   font-size: clamp(14px, 0.95vw, 18px);
@@ -319,7 +319,7 @@ onMounted(() => {
 }
 
 .btn-register-solid:hover {
-  background-color: #0F3A68;
+  background-color: var(--color-brand-blue-medium);
 }
 
 .main-content {

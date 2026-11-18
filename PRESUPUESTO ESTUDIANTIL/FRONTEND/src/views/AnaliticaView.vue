@@ -275,23 +275,23 @@ function formatearFecha(iso) {
 // Configuración de los 3 embudos principales
 const embudoGasto = computed(() => {
   return calcularEmbudo([
-    { nombre: 'iniciado', etiqueta: 'Intención (Clic + Registrar)', evento: 'presupuesto_movimiento_iniciado', color: '#3B82F6' },
-    { nombre: 'advertido', etiqueta: 'Aviso Límite Evaluado', evento: 'presupuesto_limite_advertido', color: '#F59E0B' },
-    { nombre: 'guardado', etiqueta: 'Guardado con Éxito en BD', evento: 'presupuesto_movimiento_guardado', color: '#10B981' }
+    { nombre: 'iniciado', etiqueta: 'Intención (Clic + Registrar)', evento: 'presupuesto_movimiento_iniciado', color: 'var(--color-border-focus)' },
+    { nombre: 'advertido', etiqueta: 'Aviso Límite Evaluado', evento: 'presupuesto_limite_advertido', color: 'var(--color-warning)' },
+    { nombre: 'guardado', etiqueta: 'Guardado con Éxito en BD', evento: 'presupuesto_movimiento_guardado', color: 'var(--color-success)' }
   ])
 })
 
 const embudoMetas = computed(() => {
   return calcularEmbudo([
-    { nombre: 'iniciado', etiqueta: 'Asignación Iniciada', evento: 'presupuesto_meta_asignacion_iniciada', color: '#6366F1' },
-    { nombre: 'completado', etiqueta: 'Fondos Reservados en Meta', evento: 'presupuesto_meta_fondos_asignados', color: '#10B981' }
+    { nombre: 'iniciado', etiqueta: 'Asignación Iniciada', evento: 'presupuesto_meta_asignacion_iniciada', color: 'var(--color-violet)' },
+    { nombre: 'completado', etiqueta: 'Fondos Reservados en Meta', evento: 'presupuesto_meta_fondos_asignados', color: 'var(--color-success)' }
   ])
 })
 
 const embudoCategorias = computed(() => {
   return calcularEmbudo([
-    { nombre: 'iniciado', etiqueta: 'Definir Límite Iniciado', evento: 'presupuesto_categoria_asignacion_iniciada', color: '#8B5CF6' },
-    { nombre: 'guardado', etiqueta: 'Límite Guardado con Éxito', evento: 'presupuesto_categoria_guardado', color: '#10B981' }
+    { nombre: 'iniciado', etiqueta: 'Definir Límite Iniciado', evento: 'presupuesto_categoria_asignacion_iniciada', color: 'var(--color-violet)' },
+    { nombre: 'guardado', etiqueta: 'Límite Guardado con Éxito', evento: 'presupuesto_categoria_guardado', color: 'var(--color-success)' }
   ])
 })
 
@@ -317,7 +317,7 @@ onMounted(() => {
   margin: 20px auto 50px auto;
   padding: 0 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #1E293B;
+  color: var(--color-text-secondary);
 }
 
 .analitica-cabecera {
@@ -327,7 +327,7 @@ onMounted(() => {
   margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 16px;
-  border-bottom: 1px solid #E2E8F0;
+  border-bottom: 1px solid var(--color-border-subtle);
   padding-bottom: 16px;
 }
 
@@ -336,8 +336,8 @@ onMounted(() => {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  background-color: #EFF6FF;
-  color: #1D4ED8;
+  background-color: var(--color-primary-subtle);
+  color: var(--color-primary);
   padding: 3px 8px;
   border-radius: 9999px;
   margin-bottom: 6px;
@@ -346,13 +346,13 @@ onMounted(() => {
 .analitica-titulo {
   font-size: 26px;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--color-text-primary);
   margin: 0 0 4px 0;
 }
 
 .analitica-subtitulo {
   font-size: 15px;
-  color: #64748B;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -364,8 +364,8 @@ onMounted(() => {
 
 .btn-volver-dashboard {
   background: white;
-  border: 1px solid #CBD5E1;
-  color: #1E293B;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
   padding: 8px 14px;
   border-radius: 8px;
   text-decoration: none;
@@ -375,12 +375,12 @@ onMounted(() => {
 }
 
 .btn-volver-dashboard:hover {
-  background: #F8FAFC;
-  border-color: #94A3B8;
+  background: var(--color-bg-main);
+  border-color: var(--color-border-strong);
 }
 
 .btn-actualizar {
-  background: #154C86;
+  background: var(--color-brand-blue-medium);
   color: white;
   border: none;
   padding: 8px 14px;
@@ -410,9 +410,9 @@ onMounted(() => {
 }
 
 .feedback-badge {
-  background: #DCFCE7;
-  color: #166534;
-  border: 1px solid #86EFAC;
+  background: var(--color-success-bg);
+  color: var(--color-success-dark);
+  border: 1px solid var(--color-success-border);
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 12px;
@@ -429,9 +429,9 @@ onMounted(() => {
 }
 
 .btn-limpiar {
-  background: #FEE2E2;
-  color: #991B1B;
-  border: 1px solid #FECACA;
+  background: var(--color-danger-bg);
+  color: var(--color-danger-dark);
+  border: 1px solid var(--color-danger-border);
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 13px;
@@ -449,7 +449,7 @@ onMounted(() => {
 
 .kpi-card {
   background: white;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -460,7 +460,7 @@ onMounted(() => {
 .kpi-label {
   font-size: 12px;
   font-weight: 600;
-  color: #64748B;
+  color: var(--color-text-muted);
   margin-bottom: 6px;
 }
 
@@ -473,19 +473,19 @@ onMounted(() => {
 
 .kpi-sub {
   font-size: 12px;
-  color: #94A3B8;
+  color: var(--color-border-strong);
 }
 
-.texto-azul { color: #2563EB; }
-.texto-verde { color: #10B981; }
-.texto-rojo { color: #DC2626; }
-.texto-naranja { color: #D97706; }
+.texto-azul { color: var(--color-primary); }
+.texto-verde { color: var(--color-success); }
+.texto-rojo { color: var(--color-danger); }
+.texto-naranja { color: var(--color-warning); }
 
 /* Embudos */
 .subtitulo-seccion {
   font-size: 18px;
   font-weight: 700;
-  color: #1E293B;
+  color: var(--color-text-secondary);
   margin: 0 0 14px 0;
 }
 
@@ -498,7 +498,7 @@ onMounted(() => {
 
 .card-embudo {
   background: white;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
@@ -515,19 +515,19 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 700;
   margin: 0 0 4px 0;
-  color: #0F172A;
+  color: var(--color-text-primary);
 }
 
 .embudo-desc {
   font-size: 13px;
-  color: #64748B;
+  color: var(--color-text-muted);
 }
 
 .badge-flujo {
   font-size: 11px;
   font-weight: 700;
-  background: #F1F5F9;
-  color: #475569;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
   padding: 3px 8px;
   border-radius: 6px;
 }
@@ -555,7 +555,7 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: #334155;
+  color: var(--color-text-secondary);
 }
 
 .circulo-indicador {
@@ -565,16 +565,16 @@ onMounted(() => {
   display: inline-block;
 }
 
-.circulo-amarillo { background-color: #F59E0B; }
-.circulo-rojo { background-color: #EF4444; }
+.circulo-amarillo { background-color: var(--color-warning); }
+.circulo-rojo { background-color: var(--color-danger); }
 
 .paso-conteo {
-  color: #64748B;
+  color: var(--color-text-muted);
 }
 
 .barra-contenedor {
   height: 14px;
-  background: #F1F5F9;
+  background: var(--color-bg-subtle);
   border-radius: 9999px;
   overflow: hidden;
 }
@@ -587,8 +587,8 @@ onMounted(() => {
 
 .badge-caida {
   font-size: 12px;
-  color: #B91C1C;
-  background: #FEF2F2;
+  color: var(--color-danger-hover);
+  background: var(--color-danger-subtle);
   padding: 3px 8px;
   border-radius: 6px;
   display: inline-block;
@@ -603,7 +603,7 @@ onMounted(() => {
 
 .desc-frenos {
   font-size: 14px;
-  color: #64748B;
+  color: var(--color-text-muted);
   margin: -6px 0 16px 0;
 }
 
@@ -614,9 +614,9 @@ onMounted(() => {
 }
 
 .card-freno {
-  background: #FFF;
-  border: 1px solid #FEE2E2;
-  border-left: 4px solid #EF4444;
+  background: var(--color-surface-white);
+  border: 1px solid var(--color-danger-bg);
+  border-left: 4px solid var(--color-danger);
   border-radius: 10px;
   padding: 16px;
   display: flex;
@@ -637,12 +637,12 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 700;
   margin: 0;
-  color: #991B1B;
+  color: var(--color-danger-dark);
 }
 
 .freno-desc {
   font-size: 12px;
-  color: #7F1D1D;
+  color: var(--color-danger-dark);
   margin: 0;
 }
 
@@ -655,7 +655,7 @@ onMounted(() => {
 /* TABLA */
 .seccion-tabla-eventos {
   background: white;
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 12px;
   padding: 20px;
 }
@@ -663,7 +663,7 @@ onMounted(() => {
 .tabla-vacia {
   text-align: center;
   padding: 30px;
-  color: #64748B;
+  color: var(--color-text-muted);
   font-size: 14px;
 }
 
@@ -677,13 +677,13 @@ onMounted(() => {
 .tabla-telemetria th,
 .tabla-telemetria td {
   padding: 10px 12px;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid var(--color-bg-subtle);
   text-align: left;
 }
 
 .tabla-telemetria th {
-  background: #F8FAFC;
-  color: #475569;
+  background: var(--color-bg-main);
+  color: var(--color-text-secondary);
   font-weight: 600;
 }
 
@@ -694,25 +694,25 @@ onMounted(() => {
   font-weight: 600;
 }
 
-.badge-exito { background: #FEF3C7; color: #92400E; }
-.badge-error { background: #FEE2E2; color: #991B1B; }
+.badge-exito { background: var(--color-warning-bg); color: var(--color-warning-dark); }
+.badge-error { background: var(--color-danger-bg); color: var(--color-danger-dark); }
 
 .nombre-evento-col code {
   font-weight: 600;
-  color: #1E293B;
-  background: #F1F5F9;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-subtle);
   padding: 2px 5px;
   border-radius: 4px;
 }
 
 .props-col code {
-  color: #0284C7;
+  color: var(--color-sky);
   font-family: monospace;
   font-size: 12px;
 }
 
 .fecha-col {
-  color: #64748B;
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 </style>

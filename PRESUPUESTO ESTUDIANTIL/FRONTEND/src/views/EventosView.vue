@@ -56,12 +56,12 @@ onMounted(() => {
 }
 
 h2 {
-  color: #1e293b;
+  color: var(--color-text-secondary);
   margin-bottom: 5px;
 }
 
 .descripcion {
-  color: #64748b;
+  color: var(--color-text-muted);
   font-size: 14px;
   margin-bottom: 20px;
 }
@@ -75,44 +75,44 @@ h2 {
 
 .tabla-eventos th,
 .tabla-eventos td {
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-border-default);
   padding: 10px 12px;
   text-align: left;
 }
 
 .tabla-eventos th {
-  background-color: #f1f5f9;
-  color: #334155;
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
   font-weight: 600;
 }
 
 .tabla-eventos tr:nth-child(even) {
-  background-color: #f8fafc;
+  background-color: var(--color-bg-main);
 }
 
 .nombre-evento {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text-primary);
 }
 
 .props-evento code {
-  background-color: #f1f5f9;
+  background-color: var(--color-bg-subtle);
   padding: 3px 6px;
   border-radius: 4px;
-  color: #0284c7;
+  color: var(--color-sky);
   font-family: monospace;
 }
 
 .fecha-evento {
-  color: #64748b;
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 
 .vacio {
   padding: 20px;
-  color: #64748b;
-  background-color: #f8fafc;
-  border: 1px dashed #cbd5e1;
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-main);
+  border: 1px dashed var(--color-border-default);
   text-align: center;
 }
 </style>
