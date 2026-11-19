@@ -12,21 +12,36 @@
 
 ---
 
+## 📊 Informes Técnicos y Entregables del Fork
+
+Los informes técnicos oficiales generados para la evaluación del segundo proyecto de Interacción Humano-Computador se encuentran disponibles directamente en la raíz del repositorio:
+
+| Documento | Descripción | Cobertura / Métrica |
+|---|---|:---:|
+| 📄 **[INFORME_ACCESIBILIDAD.md](./PROYECTO2-IHC/INFORME_ACCESIBILIDAD.md)** | Auditoría integral de accesibilidad web (WCAG 2.1 AA), certificación de contrastes cromáticos ($\ge 4.5:1$ texto normal, $\ge 3:1$ interfaz), atributos ARIA semánticos y 6 reportes HTML interactivos de Google Lighthouse. | **100/100 Lighthouse** ✅ |
+| 🧪 **[INFORME_PRUEBAS_E2E_COBERTURA.md](./PROYECTO2-IHC/INFORME_PRUEBAS_E2E_COBERTURA.md)** | Informe exhaustivo de la suite de pruebas automatizadas End-to-End (E2E) con Playwright, inventario individual de las 32 pruebas, matriz de cobertura del 100% de features del fork y log de consola. | **32/32 Pasadas (100%)** ✅ |
+| 🎨 **[MATRIZ_COMPONENTES_TOKENS_FIGMA.md](./PROYECTO2-IHC/MATRIZ_COMPONENTES_TOKENS_FIGMA.md)** | Matriz de trazabilidad y consistencia visual entre los Design Tokens de Figma (colores, tipografía, bordes, estados) y su implementación en `src/tokens.css` y vistas de Vue 3. | **Tokens Sincronizados** ✅ |
+| 📋 **[HISTORIAL_GIT.md](./PROYECTO2-IHC/HISTORIAL_GIT.md)** | Historial completo de commits desde el fork (47 commits propios organizados por hito/tarea, desde el análisis inicial hasta el despliegue final). | **47 commits documentados** ✅ |
+
+---
+
 ## 📑 Tabla de Contenidos
 
-1. [Arquitectura del Sistema](#-arquitectura-del-sistema)
-2. [Estructura del Proyecto](#-estructura-del-proyecto)
-3. [Flujos Principales de la Aplicación](#-flujos-principales-de-la-aplicación)
-4. [Requisitos Previos](#-requisitos-previos)
-5. [Instalación y Ejecución Local](#-instalación-y-ejecución-local)
+1. [Informes Técnicos y Entregables del Fork](#-informes-técnicos-y-entregables-del-fork)
+2. [Arquitectura del Sistema](#-arquitectura-del-sistema)
+3. [Estructura del Proyecto](#-estructura-del-proyecto)
+4. [Flujos Principales de la Aplicación](#-flujos-principales-de-la-aplicación)
+5. [Requisitos Previos](#-requisitos-previos)
+6. [Instalación y Ejecución Local](#-instalación-y-ejecución-local)
    - [Paso 1: Backend (FastAPI)](#paso-1-backend-fastapi)
    - [Paso 2: Frontend (Vue 3 + Vite)](#paso-2-frontend-vue-3--vite)
    - [Ejecución Rápida en Windows (.bat)](#ejecución-rápida-en-windows-bat)
-6. [Configuración de Entorno (.env)](#-configuración-de-entorno-env)
-7. [Pruebas Automatizadas y QA](#-pruebas-automatizadas-y-qa)
+7. [Configuración de Entorno (.env)](#-configuración-de-entorno-env)
+8. [Pruebas Automatizadas y QA](#-pruebas-automatizadas-y-qa)
    - [Pruebas Unitarias del Backend (Pytest)](#pruebas-unitarias-del-backend-pytest)
    - [Pruebas E2E y Accesibilidad (Playwright + Axe-Core)](#pruebas-e2e-y-accesibilidad-playwright--axe-core)
-8. [Documentación y Evidencias por Tarea](#-documentación-y-evidencias-por-tarea)
+9. [Documentación y Evidencias por Tarea](#-documentación-y-evidencias-por-tarea)
+10. [Historial de Git](#-historial-de-git)
 
 ---
 
@@ -75,21 +90,33 @@ flowchart TD
 
 ```
 segundo_proyecto_fork/
+├── INFORME_ACCESIBILIDAD.md           # Informe de accesibilidad WCAG 2.1 AA y Lighthouse
+├── INFORME_PRUEBAS_E2E_COBERTURA.md   # Informe de 32 pruebas E2E (100% cobertura)
+├── MATRIZ_COMPONENTES_TOKENS_FIGMA.md # Trazabilidad tokens Figma a CSS/Vue
+├── HISTORIAL_GIT.md                   # Historial completo de commits desde el fork (47 commits)
+├── README.md                          # Documentación general del repositorio
+├── evidencias/                        # Evidencias de auditoría Lighthouse y capturas
+│   └── Lighthouse/                    # Reportes HTML interactivos de accesibilidad
+│
 ├── PROYECTO2-IHC/
 │   ├── iniciar_backend.bat            # Script para iniciar Backend en Windows
 │   ├── iniciar_frontend.bat           # Script para iniciar Frontend en Windows
 │   ├── package.json                   # Dependencias de pruebas Playwright + Axe
 │   ├── playwright.config.js           # Configuración de pruebas E2E
-│   ├── tests/                         # Suites de pruebas E2E y accesibilidad
-│   │   ├── accesibilidad.spec.js      # Auditoría WCAG 2.1 AA
-│   │   ├── login.spec.js              # Pruebas de acceso
-│   │   ├── registrar-gasto.spec.js    # Flujo de gastos
-│   │   ├── limite-mensual.spec.js     # Reglas de límite de gastos
-│   │   ├── tarea8-metas-ahorro.spec.js # Pruebas de metas de ahorro
-│   │   ├── tarea9-aviso-limite-y-telemetria.spec.js
-│   │   └── tarea10-portabilidad-y-baja-cuenta.spec.js
+│   ├── tests/                         # Suites de pruebas E2E y accesibilidad (18 archivos, 32 tests)
+│   │   ├── accesibilidad.spec.js      # Auditoría WCAG 2.1 AA (3 tests)
+│   │   ├── login.spec.js              # Pruebas de acceso (2 tests)
+│   │   ├── registrar-gasto.spec.js    # Flujo de gastos (2 tests)
+│   │   ├── editar-eliminar.spec.js    # Edición y eliminación (3 tests)
+│   │   ├── limite-categoria-mes.spec.js # Límites por categoría y recálculo (2 tests)
+│   │   ├── limite-mensual.spec.js     # Reglas de límite de gastos (2 tests)
+│   │   ├── tarea8-metas-ahorro.spec.js # Pruebas de metas de ahorro (1 test)
+│   │   ├── tarea9-aviso-limite-y-telemetria.spec.js # Aviso y analítica (1 test)
+│   │   └── tarea10-portabilidad-y-baja-cuenta.spec.js # Baja ética y portabilidad (1 test)
 │   │
 │   ├── docs/                          # Documentación académica y de diseño
+│   │   ├── INFORME_ACCESIBILIDAD.md   # Réplica del informe de accesibilidad
+│   │   ├── INFORME_PRUEBAS_E2E_COBERTURA.md # Réplica del informe de pruebas E2E
 │   │   ├── issue-limite-mensual.md    # Especificación de límites
 │   │   ├── evidencias/                # Capturas y respaldos de ejecución
 │   │   └── tarea6.md, tarea7.md...    # Reportes detallados por entrega
@@ -230,8 +257,8 @@ Para levantar el proyecto en tu computadora, abre **dos terminales**:
 ### Ejecución Rápida en Windows (.bat)
 
 Si estás en Windows, puedes iniciar ambos servicios con los scripts incluidos en `PROYECTO2-IHC/`:
-- Doble clic en **`iniciar_backend.bat`**
-- Doble clic en **`iniciar_frontend.bat`**
+- Doble clic en **`PROYECTO2-IHC/iniciar_backend.bat`**
+- Doble clic en **`PROYECTO2-IHC/iniciar_frontend.bat`**
 
 ---
 
@@ -257,21 +284,38 @@ pytest -v -p no:warnings
 ```
 
 ### Pruebas E2E y Accesibilidad (Playwright + Axe-Core)
-Ejecuta las pruebas de interfaz y la verificación de accesibilidad WCAG 2.1 AA:
+Ejecuta la suite completa de 32 pruebas automatizadas y la verificación de accesibilidad:
 
 ```bash
 cd "PROYECTO2-IHC"
 pnpm test:e2e
 ```
-*Para ejecutarlas con interfaz visual de Playwright:*
+*Para ejecutarlas con el listado detallado en tiempo real en consola:*
 ```bash
-pnpm test:e2e:ui
+pnpm test:e2e --reporter=list
 ```
+*Para abrir el reporte interactivo HTML:*
+```bash
+pnpm exec playwright show-report
+```
+
+> 📖 **Informe Completo de Pruebas:** Para consultar el detalle de las 32 pruebas ejecutadas, la matriz de cobertura del 100% y la salida de consola, revisa **[INFORME_PRUEBAS_E2E_COBERTURA.md](./PROYECTO2-IHC/INFORME_PRUEBAS_E2E_COBERTURA.md)**.
 
 ---
 
 ## 📚 Documentación y Evidencias por Tarea
 
+### Informes Principales del Proyecto (Raíz)
+- 📄 **[INFORME_ACCESIBILIDAD.md](./PROYECTO2-IHC/INFORME_ACCESIBILIDAD.md)**: Certificación de Accesibilidad WCAG 2.1 AA, contraste matemático de colores y reportes HTML de Lighthouse (Puntaje 100/100).
+- 🧪 **[INFORME_PRUEBAS_E2E_COBERTURA.md](./PROYECTO2-IHC/INFORME_PRUEBAS_E2E_COBERTURA.md)**: Auditoría formal de las 32 pruebas E2E de Playwright y 100% de cobertura del código incorporado en el fork.
+- 🎨 **[MATRIZ_COMPONENTES_TOKENS_FIGMA.md](./PROYECTO2-IHC/MATRIZ_COMPONENTES_TOKENS_FIGMA.md)**: Trazabilidad y correspondencia de Design Tokens de Figma con `src/tokens.css` y componentes de Vue 3.
+
+- 📄 **[Presupuesto_Estudiantil_Informe.pdf](./PROYECTO2-IHC/docs/Presupuesto_Estudiantil_Informe.pdf)**: Informe completo del proyecto (PDF).
+- 📊 **[Diapositiva Presupuesto Estudiantil (PDF)](./PROYECTO2-IHC/docs/Diapositiva_Presupuesto_estudiantil.pdf)**
+- 📊 **[Presentación Canva](https://canva.link/qjf4r8q3cczsg66)**
+- 🎥 **[Video explicativo del sistema Presupuesto Estudiantil](https://youtu.be/DqvCtR4v4oM)**
+
+### Reportes por Tareas Específicas
 Las especificaciones, heurísticas de Nielsen y reportes de laboratorio se encuentran en `PROYECTO2-IHC/docs/`:
 
 - [docs/issue-limite-mensual.md](file:///c:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/docs/issue-limite-mensual.md): Regla de negocio de límite de gastos y criterios de aceptación.
@@ -281,3 +325,19 @@ Las especificaciones, heurísticas de Nielsen y reportes de laboratorio se encue
 - [docs/tarea-9.md](file:///c:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/docs/tarea-9.md): Telemetría, embudos y avisos preventivos.
 - [docs/tarea-10.md](file:///c:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/docs/tarea-10.md): Portabilidad de datos y cancelación ética.
 - [docs/clase-22.md](file:///c:/Users/HP/Desktop/Universidad/Interaccion%20Hombre%20Computador/segundo_proyecto_fork/PROYECTO2-IHC/docs/clase-22.md): Solución a patrones oscuros (*Dark Patterns*).
+
+---
+
+## 📋 Historial de Git
+
+El historial completo de commits del fork (47 commits propios, organizados por hito/tarea) está documentado en:
+
+📋 **[HISTORIAL_GIT.md](./PROYECTO2-IHC/HISTORIAL_GIT.md)**
+
+| Dato | Valor |
+|---|---|
+| Punto de fork | `ada8f40` — 2026-10-27 |
+| Commits propios | 47 commits |
+| Período | 2026-10-27 → 2026-11-18 |
+| Hitos cubiertos | 13 (Tareas 5–10 + Clases 17, 20, 21, 22, 23) |
+| Último commit | `cc46ea1` — tokens de figma en el codigo |
