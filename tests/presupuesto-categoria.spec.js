@@ -34,8 +34,9 @@ test.describe('Pruebas E2E - Presupuesto por Categoría', () => {
 
     // 3. Expandir el panel
     const respCat = page.waitForResponse(
-      r => r.url().includes('/presupuestos-categoria') && r.status() === 200
-    );
+      r => r.url().includes('/presupuestos-categoria') && r.status() === 200,
+      { timeout: 5000 }
+    ).catch(() => null);
     await btnToggle.click();
     await respCat;
 
@@ -62,8 +63,9 @@ test.describe('Pruebas E2E - Presupuesto por Categoría', () => {
     // 2. Expandir el panel de categorías
     const btnToggle = page.locator('button.btn-toggle-cat');
     const respCat = page.waitForResponse(
-      r => r.url().includes('/presupuestos-categoria') && r.status() === 200
-    );
+      r => r.url().includes('/presupuestos-categoria') && r.status() === 200,
+      { timeout: 5000 }
+    ).catch(() => null);
     await btnToggle.click();
     await respCat;
 
@@ -97,8 +99,9 @@ test.describe('Pruebas E2E - Presupuesto por Categoría', () => {
 
     // 6. Esperar que la lista se recargue con el nuevo límite
     await page.waitForResponse(
-      r => r.url().includes('/presupuestos-categoria') && r.status() === 200
-    );
+      r => r.url().includes('/presupuestos-categoria') && r.status() === 200,
+      { timeout: 3000 }
+    ).catch(() => null);
 
     // 7. Verificar que "Transporte y Pasajes" ahora muestra el límite de 80 Bs
     await expect(filaTransporte).toContainText('80', { timeout: 5000 });

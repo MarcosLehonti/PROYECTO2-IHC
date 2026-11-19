@@ -151,7 +151,7 @@
         <div class="card-freno">
           <div class="freno-icono">⚠️</div>
           <div class="freno-info">
-            <h4 class="freno-titulo">Cancelado por Límite</h4>
+            <h3 class="freno-titulo">Cancelado por Límite</h3>
             <p class="freno-desc">Estudiante canceló el guardado al ver que superaría el presupuesto de categoría.</p>
             <span class="freno-conteo texto-naranja">{{ contarEvento('presupuesto_gasto_cancelado_limite') }} cancelaciones</span>
           </div>
@@ -160,7 +160,7 @@
         <div class="card-freno">
           <div class="freno-icono">🚫</div>
           <div class="freno-info">
-            <h4 class="freno-titulo">Fondos Insuficientes en Metas</h4>
+            <h3 class="freno-titulo">Fondos Insuficientes en Metas</h3>
             <p class="freno-desc">Intento de apartar dinero mayor al saldo disponible real en cuenta.</p>
             <span class="freno-conteo texto-rojo">{{ contarEvento('presupuesto_meta_error_fondos') }} bloqueos</span>
           </div>
@@ -169,7 +169,7 @@
         <div class="card-freno">
           <div class="freno-icono">✏️</div>
           <div class="freno-info">
-            <h4 class="freno-titulo">Validación de Formulario Fallida</h4>
+            <h3 class="freno-titulo">Validación de Formulario Fallida</h3>
             <p class="freno-desc">Campos vacíos o montos menores a 0 en el formulario de gasto o metas.</p>
             <span class="freno-conteo texto-rojo">{{ contarEvento('presupuesto_gasto_error_validacion') + contarEvento('presupuesto_meta_error_validacion') }} errores</span>
           </div>
@@ -178,7 +178,7 @@
         <div class="card-freno">
           <div class="freno-icono">🔍</div>
           <div class="freno-info">
-            <h4 class="freno-titulo">Búsqueda / Filtro sin Resultados</h4>
+            <h3 class="freno-titulo">Búsqueda / Filtro sin Resultados</h3>
             <p class="freno-desc">El estudiante aplicó un filtro que no arrojó movimientos en la tabla.</p>
             <span class="freno-conteo texto-azul">{{ contarEvento('presupuesto_busqueda_sin_resultados') }} veces</span>
           </div>
@@ -187,7 +187,7 @@
         <div class="card-freno">
           <div class="freno-icono">🛑</div>
           <div class="freno-info">
-            <h4 class="freno-titulo">Baja Bloqueada por Regla</h4>
+            <h3 class="freno-titulo">Baja Bloqueada por Regla</h3>
             <p class="freno-desc">Intento de eliminación bloqueado por existencia de gastos pendientes de pago.</p>
             <span class="freno-conteo texto-rojo">{{ contarEvento('cuenta_eliminacion_bloqueada') }} bloqueos</span>
           </div>
@@ -473,13 +473,13 @@ onMounted(() => {
 
 .kpi-sub {
   font-size: 12px;
-  color: var(--color-border-strong);
+  color: var(--color-text-secondary);
 }
 
 .texto-azul { color: var(--color-primary); }
 .texto-verde { color: var(--color-success); }
 .texto-rojo { color: var(--color-danger); }
-.texto-naranja { color: var(--color-warning); }
+.texto-naranja { color: var(--color-warning-hover); }
 
 /* Embudos */
 .subtitulo-seccion {

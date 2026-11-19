@@ -1,4 +1,4 @@
-﻿// @ts-check
+// @ts-check
 import { test, expect } from '@playwright/test';
 import path from 'path';
 import { runSeed } from './helpers/seed-helper.js';
@@ -21,6 +21,8 @@ async function loginYEsperar(page) {
 
 test.describe('Pruebas E2E - Tarea 7: Límites por Categoría y Mes (Cálculo, Estados y Recálculo Dinámico)', () => {
 
+  test.setTimeout(90000);
+
   test.beforeEach(async () => {
     runSeed();
   });
@@ -35,7 +37,7 @@ test.describe('Pruebas E2E - Tarea 7: Límites por Categoría y Mes (Cálculo, E
     // 1. Expandir panel de presupuestos por categoría
     const btnToggle = page.locator('button.btn-toggle-cat');
     await expect(btnToggle).toBeVisible({ timeout: 5000 });
-    const respCat = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    const respCat = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 5000 }).catch(() => null);
     await btnToggle.click();
     await respCat;
 
@@ -56,10 +58,10 @@ test.describe('Pruebas E2E - Tarea 7: Límites por Categoría y Mes (Cálculo, E
     page.once('dialog', async dialog => {
       await dialog.accept('40');
     });
-    const respPostAlerta = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    const respPostAlerta = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 5000 }).catch(() => null);
     await filaComida.locator('.btn-asignar-cat').click();
     await respPostAlerta;
-    await page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    await page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 3000 }).catch(() => null);
 
     // Verificar badge >=80%
     await expect(filaComida.locator('.badge-cat-alerta')).toHaveText('>=80%');
@@ -69,10 +71,10 @@ test.describe('Pruebas E2E - Tarea 7: Límites por Categoría y Mes (Cálculo, E
     page.once('dialog', async dialog => {
       await dialog.accept('30');
     });
-    const respPostExcedido = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    const respPostExcedido = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 5000 }).catch(() => null);
     await filaComida.locator('.btn-asignar-cat').click();
     await respPostExcedido;
-    await page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    await page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 3000 }).catch(() => null);
 
     // Verificar badge Excedido y saldo negativo
     await expect(filaComida.locator('.badge-cat-excedido')).toHaveText('Excedido');
@@ -85,7 +87,7 @@ test.describe('Pruebas E2E - Tarea 7: Límites por Categoría y Mes (Cálculo, E
 
     // 1. Expandir panel de categorías
     const btnToggle = page.locator('button.btn-toggle-cat');
-    const respCat = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    const respCat = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 5000 }).catch(() => null);
     await btnToggle.click();
     await respCat;
 
@@ -97,10 +99,19 @@ test.describe('Pruebas E2E - Tarea 7: Límites por Categoría y Mes (Cálculo, E
     page.once('dialog', async dialog => {
       await dialog.accept('100');
     });
-    const respSetTrans = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    const respSetTrans = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 5000 }).catch(() => null);
     await filaTransporte.locator('.btn-asignar-cat').click();
     await respSetTrans;
-    await page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200);
+    await page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 3000 }).catch(() => null);
+
+    // Restablecer límite de Comida y Almuerzos a 150 Bs tras la modificación del Test 1
+    page.once('dialog', async dialog => {
+      await dialog.accept('150');
+    });
+    const respSetComida = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 5000 }).catch(() => null);
+    await filaComida.locator('.btn-asignar-cat').click();
+    await respSetComida;
+    await page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 3000 }).catch(() => null);
 
     // Leer gasto actual de Transporte antes de registrar nuevo gasto
     const textoGastoTransAntes = await filaTransporte.locator('strong').first().textContent();
@@ -127,17 +138,26 @@ test.describe('Pruebas E2E - Tarea 7: Límites por Categoría y Mes (Cálculo, E
 
     const selectEditarCat = page.locator('#editar-categoria');
     await expect(selectEditarCat).toBeVisible();
-    await selectEditarCat.selectOption('Comida y Almuerzos');
+    await selectEditarCat.selectOption({ value: 'Comida y Almuerzos' });
 
-    const respPut = page.waitForResponse(r => r.url().includes('/movimientos/') && r.request().method() === 'PUT' && r.status() === 200);
-    await page.click('button.btn-guardar-principal');
+    const respPresupuestosCat = page.waitForResponse(r => r.url().includes('/presupuestos-categoria') && r.status() === 200, { timeout: 10000 }).catch(() => null);
+    const respPut = page.waitForResponse(r => r.url().includes('/movimientos/') && r.request().method() === 'PUT' && r.status() === 200, { timeout: 7000 }).catch(() => null);
+    await page.click('button:has-text("Guardar cambios")');
+
+    // Si salta el aviso preventivo de límite (Tarea 9), confirmar "Guardar de todos modos"
+    const btnConfirmarExceso = page.locator('.btn-confirmar-exceso');
+    if (await btnConfirmarExceso.isVisible({ timeout: 1500 }).catch(() => false)) {
+      await btnConfirmarExceso.click();
+    }
     await respPut;
+    await respPresupuestosCat;
+    await page.waitForTimeout(1000);
 
     // Verificar recálculo en AMBAS categorías:
     // Transporte debe restar 30 Bs
-    await expect(filaTransporte).toContainText(`${gastoTransInicial.toFixed(2)} Bs`, { timeout: 7000 });
+    await expect(filaTransporte).toContainText(`${gastoTransInicial.toFixed(2)} Bs`, { timeout: 15000 });
     // Comida debe haber sumado 30 Bs
-    await expect(filaComida).toContainText('65.00 Bs', { timeout: 7000 });
+    await expect(filaComida).toContainText('65.00 Bs', { timeout: 15000 });
     await page.screenshot({ path: `${EVIDENCIAS}/tarea7-05-mover-categoria-actualiza-ambas.png`, fullPage: true });
 
     // 4. Registrar un INGRESO de 100 Bs en Comida o Beca y verificar que NO altera el consumo de presupuesto

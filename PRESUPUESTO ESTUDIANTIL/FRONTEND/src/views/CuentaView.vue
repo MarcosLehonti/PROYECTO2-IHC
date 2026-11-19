@@ -580,21 +580,21 @@ onMounted(() => {
 }
 
 .btn-descarga-json {
-  background-color: var(--color-sky);
+  background-color: var(--color-primary-default);
   color: var(--color-surface-white);
 }
 
 .btn-descarga-json:hover:not(:disabled) {
-  background-color: var(--color-sky-hover);
+  background-color: var(--color-primary-hover);
 }
 
 .btn-descarga-csv {
-  background-color: var(--color-sky);
+  background-color: var(--color-primary-default);
   color: var(--color-surface-white);
 }
 
 .btn-descarga-csv:hover:not(:disabled) {
-  background-color: var(--color-sky-hover);
+  background-color: var(--color-primary-hover);
 }
 
 .btn-descarga:disabled {

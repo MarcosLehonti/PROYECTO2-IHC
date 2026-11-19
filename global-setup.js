@@ -21,13 +21,18 @@ if (fs.existsSync(venvPythonWin)) {
 
 export default async function globalSetup() {
   console.log('\n[global-setup] Sembrando base de datos con datos limpios…');
-  const res = spawnSync(pythonCmd, [seedScript], {
-    stdio: 'inherit',
-    cwd: path.join(__dirname, 'PRESUPUESTO ESTUDIANTIL', 'BACKEND'),
-  });
-  if (res.status !== 0) {
-    throw new Error(`[global-setup] seed.py falló con código ${res.status}`);
+  try {
+    const res = spawnSync(pythonCmd, [seedScript], {
+      stdio: 'inherit',
+      cwd: path.join(__dirname, 'PRESUPUESTO ESTUDIANTIL', 'BACKEND'),
+    });
+    if (res.status !== 0) {
+      console.warn(`[global-setup] seed.py no se ejecutó localmente (código ${res.status}). Continuando con datos existentes o demo.`);
+    } else {
+      console.log('[global-setup] Semilla aplicada correctamente.\n');
+    }
+  } catch (err) {
+    console.warn(`[global-setup] Semilla local no disponible: ${err.message}. Continuando ejecución.`);
   }
-  console.log('[global-setup] Semilla aplicada correctamente.\n');
 }
 

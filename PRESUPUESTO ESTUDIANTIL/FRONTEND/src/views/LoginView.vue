@@ -281,7 +281,7 @@ async function handleLogin() {
 }
 
 .btn-submit {
-  background-color: var(--color-sky);
+  background-color: var(--color-primary-default);
   color: var(--color-surface-white);
   border: none;
   padding: clamp(12px, 0.8vw, 15px);
@@ -294,7 +294,7 @@ async function handleLogin() {
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: var(--color-brand-blue-deep);
+  background-color: var(--color-primary-hover);
 }
 
 .btn-submit:disabled {
